@@ -11,870 +11,372 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
-  :root {
-    --bg-primary: #0f1117;
-    --bg-secondary: #1a1d2e;
-    --bg-card: rgba(255,255,255,0.05);
-    --text-primary: #e8e8ed;
-    --text-secondary: #888;
-    --text-muted: #555;
-    --border-subtle: rgba(255,255,255,0.06);
-    --border-light: rgba(255,255,255,0.1);
-    --green: #4CAF50;
-    --green-dark: #2E7D32;
-    --orange: #FF9800;
-    --blue: #2196F3;
-    --red: #e53935;
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bottom: env(safe-area-inset-bottom, 0px);
-  }
+:root {
+  --bg-primary: #0f1117; --bg-secondary: #1a1d2e; --bg-card: rgba(255,255,255,0.05);
+  --text-primary: #e8e8ed; --text-secondary: #888; --text-muted: #555;
+  --border-subtle: rgba(255,255,255,0.06); --border-light: rgba(255,255,255,0.1);
+  --green: #4CAF50; --green-dark: #2E7D32; --red: #e53935;
+  --safe-top: env(safe-area-inset-top, 0px); --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { font-family: 'DM Sans', -apple-system, sans-serif; background: linear-gradient(145deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%); color: var(--text-primary); min-height: 100vh; min-height: 100dvh; -webkit-font-smoothing: antialiased; overscroll-behavior: none; }
+.app { max-width: 480px; margin: 0 auto; min-height: 100vh; min-height: 100dvh; position: relative; }
+.hidden { display: none !important; }
+input { font-size: 16px !important; }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+/* Loading */
+.loading-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+.spinner { width: 36px; height: 36px; border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--green); border-radius: 50%; animation: spin 0.8s linear infinite; }
+.loading-text { margin-top: 16px; color: var(--text-secondary); font-size: 14px; }
 
-  body {
-    font-family: 'DM Sans', -apple-system, sans-serif;
-    background: linear-gradient(145deg, var(--bg-primary) 0%, var(--bg-secondary) 50%, var(--bg-primary) 100%);
-    color: var(--text-primary);
-    min-height: 100vh;
-    min-height: 100dvh;
-    -webkit-font-smoothing: antialiased;
-    overscroll-behavior: none;
-  }
+/* Auth */
+.auth-screen { padding: 60px 24px 40px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+.auth-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+.auth-logo-text { font-size: 30px; font-weight: 700; letter-spacing: -0.03em; }
+.auth-subtext { font-size: 15px; color: var(--text-secondary); margin-bottom: 36px; }
+.auth-box { width: 100%; max-width: 320px; }
+.auth-input { width: 100%; padding: 14px 18px; background: rgba(255,255,255,0.06); border: 1px solid var(--border-light); border-radius: 14px; color: var(--text-primary); font-family: 'DM Sans', sans-serif; outline: none; margin-bottom: 12px; transition: border-color 0.2s; }
+.auth-input:focus { border-color: var(--green); }
+.auth-btn { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--green), var(--green-dark)); border: none; border-radius: 14px; color: #fff; font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-bottom: 16px; transition: opacity 0.15s; }
+.auth-btn:active { opacity: 0.85; }
+.auth-btn:disabled { opacity: 0.5; }
+.auth-toggle { font-size: 14px; color: var(--text-secondary); text-align: center; cursor: pointer; }
+.auth-toggle span { color: var(--green); font-weight: 600; }
+.auth-error { font-size: 13px; color: var(--red); text-align: center; margin-bottom: 12px; padding: 10px; background: rgba(229,57,53,0.1); border-radius: 10px; }
 
-  .app {
-    max-width: 480px;
-    margin: 0 auto;
-    min-height: 100vh;
-    min-height: 100dvh;
-    position: relative;
-  }
+/* Header */
+.header { padding: calc(16px + var(--safe-top)) 20px 12px; position: sticky; top: 0; z-index: 10; background: rgba(15,17,23,0.92); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between; }
+.logo { font-size: 26px; font-weight: 700; letter-spacing: -0.03em; display: flex; align-items: center; gap: 10px; }
+.logo-icon { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; background: linear-gradient(135deg, var(--green), var(--green-dark)); border-radius: 10px; font-size: 18px; font-weight: 700; color: #fff; font-family: 'Space Mono', monospace; }
+.back-btn { background: rgba(255,255,255,0.08); border: none; color: var(--text-primary); padding: 8px 14px; border-radius: 10px; font-size: 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 500; }
+.back-btn:active { background: rgba(255,255,255,0.12); }
+.header-center { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; justify-content: center; }
+.header-icon-btn { font-size: 24px; cursor: pointer; padding: 4px 6px; border-radius: 8px; background: rgba(255,255,255,0.06); flex-shrink: 0; }
+.header-name { font-size: 20px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.edit-hint { font-size: 14px; opacity: 0.35; }
+.name-edit-input { font-size: 18px; font-weight: 700; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 4px 10px; color: var(--text-primary); font-family: 'DM Sans', sans-serif; outline: none; width: 100%; max-width: 200px; text-align: center; }
+.header-spacer { width: 70px; }
+.user-btn { display: flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 6px 12px; cursor: pointer; color: var(--text-primary); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; flex-shrink: 0; }
+.user-btn:active { background: rgba(255,255,255,0.1); }
+.user-btn-name { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
 
-  /* Header */
-  .header {
-    padding: calc(16px + var(--safe-top)) 20px 12px;
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: rgba(15,17,23,0.92);
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border-subtle);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+/* Content */
+.content { padding: 16px 20px calc(40px + var(--safe-bottom)); }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 
-  .logo {
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+/* Card */
+.card { background: var(--bg-card); border-radius: 16px; padding: 18px; cursor: pointer; position: relative; overflow: hidden; animation: fadeSlideIn 0.4s ease both; transition: transform 0.12s; }
+.card:active { transform: scale(0.97); }
+.card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+.card-icon { font-size: 32px; }
+.card-del { background: rgba(255,255,255,0.1); border: none; color: #999; width: 24px; height: 24px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.card-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.card-count { font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; }
+.progress-track { height: 4px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
+.progress-track.lg { height: 6px; }
+.progress-bar { height: 100%; border-radius: 4px; transition: width 0.4s ease; }
+.add-card { border: 2px dashed rgba(255,255,255,0.12); background: transparent !important; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 140px; }
+.add-card-plus { font-size: 32px; color: #666; font-weight: 300; margin-bottom: 6px; }
+.add-card-text { font-size: 13px; color: #666; font-weight: 500; }
 
-  .logo-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 36px;
-    height: 36px;
-    background: linear-gradient(135deg, var(--green), var(--green-dark));
-    border-radius: 10px;
-    font-size: 18px;
-    font-weight: 700;
-    color: #fff;
-    font-family: 'Space Mono', monospace;
-  }
+/* Confirm overlay */
+.confirm-ov { position: absolute; inset: 0; background: rgba(15,17,23,0.95); display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 16px; z-index: 5; }
+.confirm-ov p { font-size: 14px; font-weight: 500; margin-bottom: 12px; }
+.confirm-ov .btns { display: flex; gap: 10px; }
+.btn-yes { background: var(--red); border: none; color: #fff; padding: 6px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.btn-no { background: rgba(255,255,255,0.1); border: none; color: var(--text-primary); padding: 6px 18px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
 
-  .back-btn {
-    background: rgba(255,255,255,0.08);
-    border: none;
-    color: var(--text-primary);
-    padding: 8px 14px;
-    border-radius: 10px;
-    font-size: 14px;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-weight: 500;
-  }
+/* Items */
+.input-row { display: flex; gap: 10px; margin-bottom: 16px; }
+.input-row input { flex: 1; padding: 14px 18px; background: rgba(255,255,255,0.06); border: 1px solid var(--border-light); border-radius: 14px; color: var(--text-primary); font-family: 'DM Sans', sans-serif; outline: none; }
+.add-btn { width: 50px; height: 50px; border-radius: 14px; border: none; color: #fff; font-size: 24px; font-weight: 300; cursor: pointer; flex-shrink: 0; }
+.add-btn:active { opacity: 0.85; }
+.list-progress { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.list-progress .progress-track { flex: 1; }
+.progress-label { font-size: 13px; color: var(--text-secondary); font-weight: 600; min-width: 36px; text-align: right; }
 
-  .header-title {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
+.item { display: flex; align-items: center; gap: 10px; padding: 14px 6px; border-bottom: 1px solid rgba(255,255,255,0.04); animation: fadeSlideIn 0.3s ease both; }
+.item.done { opacity: 0.5; }
+.cb { width: 26px; height: 26px; border-radius: 8px; border: 2px solid; background: none; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all 0.2s; font-size: 14px; font-weight: 700; color: #fff; }
+.item-text { flex: 1; font-size: 15px; line-height: 1.4; cursor: pointer; word-break: break-word; }
+.item.done .item-text { text-decoration: line-through; }
+.item-edit-input { flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 6px 10px; color: var(--text-primary); font-family: 'DM Sans', sans-serif; outline: none; }
+.xfer-btn, .del-btn { background: none; border: none; font-size: 16px; cursor: pointer; padding: 4px 5px; opacity: 0.45; flex-shrink: 0; color: var(--text-primary); }
+.inline-cf { display: flex; gap: 4px; flex-shrink: 0; }
+.icf-y { background: var(--red); border: none; color: #fff; width: 28px; height: 28px; border-radius: 7px; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+.icf-n { background: rgba(255,255,255,0.1); border: none; color: var(--text-primary); width: 28px; height: 28px; border-radius: 7px; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
-  .header-title span { font-size: 24px; }
+.completed-hdr { display: flex; justify-content: space-between; align-items: center; padding: 16px 0 8px; margin-top: 8px; }
+.completed-lbl { font-size: 13px; color: #666; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+.clear-btn { background: none; border: none; color: var(--red); font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
 
-  .header-spacer { width: 70px; }
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 60px 20px; text-align: center; }
+.empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+.empty-text { font-size: 17px; font-weight: 600; color: #666; margin-bottom: 6px; }
+.empty-sub { font-size: 14px; color: var(--text-muted); }
 
-  /* Content */
-  .content {
-    padding: 16px 20px calc(40px + var(--safe-bottom));
-  }
+.action-bar { display: flex; gap: 8px; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-subtle); }
+.act-btn { flex: 1; padding: 10px 12px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; color: #888; font-size: 13px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.act-btn:active { background: rgba(255,255,255,0.1); }
 
-  /* Grid */
-  .grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-  }
+/* Modal */
+.modal-ov { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 20px; animation: scaleIn 0.2s ease; }
+.modal { background: #1e2030; border-radius: 20px; padding: 24px; width: 100%; max-width: 360px; border: 1px solid rgba(255,255,255,0.08); max-height: 85vh; overflow-y: auto; }
+.modal-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+.preview-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; padding: 12px 14px; background: rgba(255,255,255,0.04); border-radius: 12px; }
+.pv-icon { width: 44px; height: 44px; border-radius: 12px; border: 2px solid; display: flex; align-items: center; justify-content: center; font-size: 24px; background: rgba(255,255,255,0.05); flex-shrink: 0; }
+.pv-icon.lg { width: 56px; height: 56px; border-radius: 14px; font-size: 30px; }
+.pv-name { font-size: 16px; font-weight: 600; color: #ccc; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.m-input { width: 100%; padding: 12px 16px; background: rgba(255,255,255,0.06); border: 1px solid var(--border-light); border-radius: 12px; color: var(--text-primary); font-family: 'DM Sans', sans-serif; outline: none; margin-bottom: 16px; }
+.pk-label { font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.ic-grid { display: grid; grid-template-columns: repeat(8, 1fr); gap: 6px; margin-bottom: 16px; }
+.ic-opt { width: 100%; aspect-ratio: 1; border: none; border-radius: 10px; background: rgba(255,255,255,0.05); font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.ic-opt.sel { background: rgba(255,255,255,0.15); }
+.cl-grid { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.cl-opt { width: 28px; height: 28px; border-radius: 50%; border: none; cursor: pointer; transition: all 0.15s; }
+.cl-opt.sel { transform: scale(1.15); }
+.m-btns { display: flex; gap: 10px; justify-content: flex-end; }
+.m-cancel { background: rgba(255,255,255,0.06); border: none; color: #999; padding: 10px 20px; border-radius: 10px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.m-create { border: none; color: #fff; padding: 10px 24px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
 
-  .card {
-    background: var(--bg-card);
-    border-radius: 16px;
-    padding: 18px;
-    cursor: pointer;
-    transition: transform 0.15s, background 0.15s;
-    position: relative;
-    overflow: hidden;
-    animation: fadeSlideIn 0.4s ease both;
-  }
+/* Transfer */
+.xfer-modal { background: #1e2030; border-radius: 20px; padding: 24px; width: 100%; max-width: 360px; border: 1px solid rgba(255,255,255,0.08); max-height: 85vh; overflow-y: auto; }
+.xfer-preview { padding: 10px 14px; background: rgba(255,255,255,0.04); border-radius: 10px; margin-bottom: 16px; font-size: 15px; font-weight: 500; color: #ccc; }
+.xfer-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: rgba(255,255,255,0.04); border-radius: 10px; margin-bottom: 6px; }
+.xfer-info { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.xfer-li { font-size: 20px; flex-shrink: 0; }
+.xfer-ln { font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.xfer-acts { display: flex; gap: 6px; flex-shrink: 0; }
+.xfer-ab { border: none; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.xfer-copy { background: rgba(33,150,243,0.2); color: #64B5F6; }
+.xfer-move { background: rgba(76,175,80,0.2); color: #81C784; }
+.full-cancel { width: 100%; padding: 12px; background: rgba(255,255,255,0.06); border: none; border-radius: 10px; color: #999; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'DM Sans', sans-serif; margin-top: 10px; }
 
-  .card:active { transform: scale(0.97); }
-
-  .card-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-  }
-
-  .card-icon { font-size: 32px; }
-
-  .card-delete {
-    background: rgba(255,255,255,0.1);
-    border: none;
-    color: #999;
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    font-size: 16px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .card-title {
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 4px;
-    letter-spacing: -0.01em;
-  }
-
-  .card-count {
-    font-size: 12px;
-    color: var(--text-secondary);
-    margin-bottom: 10px;
-  }
-
-  .progress-track {
-    height: 4px;
-    background: rgba(255,255,255,0.08);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .progress-bar {
-    height: 100%;
-    border-radius: 4px;
-    transition: width 0.4s ease;
-  }
-
-  /* Add Card */
-  .add-card {
-    border: 2px dashed rgba(255,255,255,0.12);
-    background: transparent;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 140px;
-  }
-
-  .add-card-plus { font-size: 32px; color: #666; margin-bottom: 6px; font-weight: 300; }
-  .add-card-text { font-size: 13px; color: #666; font-weight: 500; }
-
-  /* Confirm Overlay on Card */
-  .confirm-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(15,17,23,0.95);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 16px;
-    z-index: 5;
-  }
-
-  .confirm-text { font-size: 14px; font-weight: 500; margin-bottom: 12px; }
-
-  .confirm-btns { display: flex; gap: 10px; }
-
-  .confirm-yes, .confirm-no {
-    border: none;
-    padding: 6px 18px;
-    border-radius: 8px;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  .confirm-yes { background: var(--red); color: #fff; }
-  .confirm-no { background: rgba(255,255,255,0.1); color: var(--text-primary); }
-
-  /* Modal */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 50;
-    padding: 20px;
-    animation: scaleIn 0.2s ease;
-  }
-
-  .modal {
-    background: #1e2030;
-    border-radius: 20px;
-    padding: 28px;
-    width: 100%;
-    max-width: 340px;
-    border: 1px solid rgba(255,255,255,0.08);
-  }
-
-  .modal-title {
-    font-size: 18px;
-    font-weight: 700;
-    margin-bottom: 18px;
-    letter-spacing: -0.02em;
-  }
-
-  .modal input {
-    width: 100%;
-    padding: 12px 16px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid var(--border-light);
-    border-radius: 12px;
-    color: var(--text-primary);
-    font-size: 15px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-    margin-bottom: 18px;
-  }
-
-  .modal-btns { display: flex; gap: 10px; justify-content: flex-end; }
-
-  .modal-cancel {
-    background: rgba(255,255,255,0.06);
-    border: none;
-    color: #999;
-    padding: 10px 20px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  .modal-create {
-    background: linear-gradient(135deg, var(--green), var(--green-dark));
-    border: none;
-    color: #fff;
-    padding: 10px 24px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  /* Item Input */
-  .input-row {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-
-  .input-row input {
-    flex: 1;
-    padding: 14px 18px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid var(--border-light);
-    border-radius: 14px;
-    color: var(--text-primary);
-    font-size: 15px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-  }
-
-  .add-btn {
-    width: 50px;
-    height: 50px;
-    border-radius: 14px;
-    border: none;
-    color: #fff;
-    font-size: 24px;
-    font-weight: 300;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  /* List Progress */
-  .list-progress {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-  }
-
-  .list-progress .progress-track {
-    flex: 1;
-    height: 6px;
-  }
-
-  .progress-label {
-    font-size: 13px;
-    color: var(--text-secondary);
-    font-weight: 600;
-    min-width: 36px;
-    text-align: right;
-  }
-
-  /* Items */
-  .item-list { display: flex; flex-direction: column; gap: 2px; }
-
-  .item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 6px;
-    border-bottom: 1px solid rgba(255,255,255,0.04);
-    animation: fadeSlideIn 0.3s ease both;
-  }
-
-  .item.done { opacity: 0.5; }
-
-  .checkbox {
-    width: 26px;
-    height: 26px;
-    border-radius: 8px;
-    border: 2px solid;
-    background: none;
-    cursor: pointer;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    font-size: 14px;
-    font-weight: 700;
-    color: #fff;
-  }
-
-  .item-text {
-    flex: 1;
-    font-size: 15px;
-    line-height: 1.4;
-    cursor: pointer;
-    word-break: break-word;
-  }
-
-  .item.done .item-text { text-decoration: line-through; }
-
-  .item-edit {
-    flex: 1;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 8px;
-    padding: 6px 10px;
-    color: var(--text-primary);
-    font-size: 15px;
-    font-family: 'DM Sans', sans-serif;
-    outline: none;
-  }
-
-  .item-delete {
-    background: none;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-    padding: 4px 6px;
-    opacity: 0.45;
-    flex-shrink: 0;
-  }
-
-  .inline-confirm { display: flex; gap: 4px; flex-shrink: 0; }
-
-  .inline-yes, .inline-no {
-    border: none;
-    width: 28px;
-    height: 28px;
-    border-radius: 7px;
-    font-size: 13px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .inline-yes { background: var(--red); color: #fff; }
-  .inline-no { background: rgba(255,255,255,0.1); color: var(--text-primary); }
-
-  /* Completed Section */
-  .completed-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 0 8px;
-    margin-top: 8px;
-  }
-
-  .completed-label {
-    font-size: 13px;
-    color: #666;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .clear-btn {
-    background: none;
-    border: none;
-    color: var(--red);
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-  }
-
-  /* Empty State */
-  .empty-state {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 60px 20px;
-    text-align: center;
-  }
-
-  .empty-icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
-  .empty-text { font-size: 17px; font-weight: 600; color: #666; margin-bottom: 6px; }
-  .empty-subtext { font-size: 14px; color: var(--text-muted); }
-
-  /* Hidden */
-  .hidden { display: none !important; }
-
-  /* Animations */
-  @keyframes fadeSlideIn {
-    from { opacity: 0; transform: translateY(12px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes scaleIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-  }
+@keyframes fadeSlideIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+@keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 <div class="app" id="app">
-
-  <!-- HOME VIEW -->
-  <div id="home-view">
-    <div class="header">
-      <div class="logo">
-        <span class="logo-icon">✓</span> My Lists
-      </div>
-    </div>
-    <div class="content">
-      <div class="grid" id="category-grid"></div>
-    </div>
-  </div>
-
-  <!-- LIST VIEW -->
-  <div id="list-view" class="hidden">
-    <div class="header">
-      <button class="back-btn" onclick="showHome()">← Back</button>
-      <div class="header-title" id="list-header-title"></div>
-      <div class="header-spacer"></div>
-    </div>
-    <div class="content">
-      <div class="input-row">
-        <input type="text" id="new-item-input" placeholder="Add an item..." />
-        <button class="add-btn" id="add-item-btn" onclick="addItem()">+</button>
-      </div>
-      <div class="list-progress" id="list-progress">
-        <div class="progress-track">
-          <div class="progress-bar" id="list-progress-bar"></div>
-        </div>
-        <span class="progress-label" id="list-progress-label">0%</span>
-      </div>
-      <div class="item-list" id="item-list"></div>
+  <div class="loading-screen" id="loading-screen"><div class="spinner"></div><p class="loading-text">Loading...</p></div>
+  <div class="auth-screen hidden" id="auth-screen">
+    <div class="auth-logo"><span class="logo-icon">✓</span><span class="auth-logo-text">My Lists</span></div>
+    <p class="auth-subtext" id="auth-sub">Sign in to sync your lists</p>
+    <div class="auth-box">
+      <div id="auth-err" class="auth-error hidden"></div>
+      <input class="auth-input" id="auth-email" type="email" placeholder="Email address" autocomplete="email" />
+      <input class="auth-input" id="auth-pass" type="password" placeholder="Password" autocomplete="current-password" />
+      <input class="auth-input hidden" id="auth-pass2" type="password" placeholder="Confirm password" autocomplete="new-password" />
+      <button class="auth-btn" id="auth-btn">Sign In</button>
+      <p class="auth-toggle" id="auth-toggle">Don't have an account? <span>Sign Up</span></p>
     </div>
   </div>
-
-  <!-- NEW LIST MODAL -->
-  <div class="modal-overlay hidden" id="new-list-modal" onclick="closeModal()">
-    <div class="modal" onclick="event.stopPropagation()">
-      <div class="modal-title">Create New List</div>
-      <input type="text" id="new-list-name" placeholder="List name..." />
-      <div class="modal-btns">
-        <button class="modal-cancel" onclick="closeModal()">Cancel</button>
-        <button class="modal-create" onclick="createCategory()">Create</button>
-      </div>
+  <div id="main-app" class="hidden">
+    <div id="home-view">
+      <div class="header"><div class="logo"><span class="logo-icon">✓</span> My Lists</div><button class="user-btn" id="user-btn"><span>👤</span><span class="user-btn-name" id="user-name"></span><span style="opacity:0.4;font-size:14px">↩</span></button></div>
+      <div class="content"><div class="grid" id="cat-grid"></div></div>
+    </div>
+    <div id="list-view" class="hidden">
+      <div class="header" id="list-header"></div>
+      <div class="content" id="list-content"></div>
     </div>
   </div>
+  <div id="modals"></div>
 </div>
-
 <script>
-// Default categories
-const DEFAULT_CATEGORIES = [
-  { id: "grocery", name: "Grocery List", icon: "🛒", color: "#4CAF50" },
-  { id: "parts", name: "Parts List", icon: "🔧", color: "#FF9800" },
-  { id: "trip", name: "Trip Prep", icon: "✈️", color: "#2196F3" },
-];
+// ===== INIT FIREBASE =====
+firebase.initializeApp({
+  apiKey: "AIzaSyCRPMt1FT2ggv32vd0p6ZQSpgoE7VHZd5o",
+  authDomain: "mylist-f1aa5.firebaseapp.com",
+  projectId: "mylist-f1aa5",
+  storageBucket: "mylist-f1aa5.firebasestorage.app",
+  messagingSenderId: "645456645731",
+  appId: "1:645456645731:web:d0fc1324ecc4d484a1b256"
+});
+const auth = firebase.auth();
+const db = firebase.firestore();
+db.enablePersistence().catch(()=>{});
 
-const ICONS = ["📋","📦","🏠","🎯","⭐","📌","🗂️","💼","🎒","🛠️","📝","🏗️"];
-const COLORS = ["#9C27B0","#E91E63","#00BCD4","#795548","#607D8B","#FF5722","#3F51B5","#009688"];
+// ===== CONSTANTS =====
+const ICONS=["📋","📦","🏠","🎯","⭐","📌","🗂️","💼","🎒","🛠️","📝","🏗️","🛒","🔧","✈️","🏕️","🚗","🎣","⛺","🏖️","🧳","💊","🐕","🎄","🎁","🏋️","📚","🎮","🍳","🧹","🌱","⚽"];
+const COLORS=["#4CAF50","#FF9800","#2196F3","#9C27B0","#E91E63","#00BCD4","#795548","#607D8B","#FF5722","#3F51B5","#009688","#F44336"];
+const DEF_CATS=[{id:"grocery",name:"Grocery List",icon:"🛒",color:"#4CAF50"},{id:"parts",name:"Parts List",icon:"🔧",color:"#FF9800"},{id:"trip",name:"Trip Prep",icon:"✈️",color:"#2196F3"}];
 
-let categories = [];
-let items = {};
-let activeCategory = null;
-let confirmDeleteId = null;
-let editingItemId = null;
+// ===== STATE =====
+let user=null, cats=[], items={}, activeCat=null, cfmDel=null, editItemId=null, editListName=false, isSignUp=false, unsub=null;
 
-// Storage
-function loadData() {
-  try {
-    const raw = localStorage.getItem("mylistsapp");
-    if (raw) {
-      const data = JSON.parse(raw);
-      categories = data.categories || DEFAULT_CATEGORIES;
-      items = data.items || {};
-    } else {
-      categories = [...DEFAULT_CATEGORIES];
-      items = {};
-    }
-  } catch (e) {
-    categories = [...DEFAULT_CATEGORIES];
-    items = {};
-  }
+// ===== DOM HELPERS =====
+const $=id=>document.getElementById(id);
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+
+// ===== AUTH =====
+$("auth-toggle").onclick=()=>{
+  isSignUp=!isSignUp;
+  $("auth-sub").textContent=isSignUp?"Create your account":"Sign in to sync your lists";
+  $("auth-btn").textContent=isSignUp?"Sign Up":"Sign In";
+  $("auth-toggle").innerHTML=isSignUp?'Already have an account? <span>Sign In</span>':"Don't have an account? <span>Sign Up</span>";
+  $("auth-pass2").classList.toggle("hidden",!isSignUp);
+  $("auth-err").classList.add("hidden");
+};
+
+$("auth-btn").onclick=async()=>{
+  const email=$("auth-email").value.trim(), pw=$("auth-pass").value, pw2=$("auth-pass2").value;
+  if(!email||!pw){authErr("Please fill in all fields");return;}
+  if(isSignUp&&pw!==pw2){authErr("Passwords don't match");return;}
+  if(isSignUp&&pw.length<6){authErr("Password must be at least 6 characters");return;}
+  $("auth-btn").disabled=true; $("auth-btn").textContent=isSignUp?"Creating account...":"Signing in...";
+  try{ isSignUp?await auth.createUserWithEmailAndPassword(email,pw):await auth.signInWithEmailAndPassword(email,pw); $("auth-err").classList.add("hidden"); }
+  catch(e){ const m={"auth/email-already-in-use":"Email already in use","auth/invalid-email":"Invalid email","auth/wrong-password":"Invalid email or password","auth/invalid-credential":"Invalid email or password","auth/user-not-found":"No account found","auth/too-many-requests":"Too many attempts, try later"}; authErr(m[e.code]||"Something went wrong"); }
+  $("auth-btn").disabled=false; $("auth-btn").textContent=isSignUp?"Sign Up":"Sign In";
+};
+function authErr(m){$("auth-err").textContent=m;$("auth-err").classList.remove("hidden");}
+$("auth-pass").onkeydown=e=>{if(e.key==="Enter"){isSignUp?$("auth-pass2").focus():$("auth-btn").click();}};
+$("auth-pass2").onkeydown=e=>{if(e.key==="Enter")$("auth-btn").click();};
+$("user-btn").onclick=()=>{if(unsub){unsub();unsub=null;}auth.signOut();};
+
+auth.onAuthStateChanged(u=>{
+  $("loading-screen").classList.add("hidden");
+  if(u){user=u; $("auth-screen").classList.add("hidden"); $("main-app").classList.remove("hidden"); $("user-name").textContent=u.email.split("@")[0]; loadData();}
+  else{user=null;if(unsub){unsub();unsub=null;} $("auth-screen").classList.remove("hidden"); $("main-app").classList.add("hidden"); activeCat=null; $("home-view").classList.remove("hidden"); $("list-view").classList.add("hidden");}
+});
+
+// ===== FIRESTORE =====
+function uDoc(){return db.collection("users").doc(user.uid);}
+function loadData(){
+  if(unsub)unsub();
+  unsub=uDoc().onSnapshot(doc=>{
+    if(doc.exists){const d=doc.data();cats=d.categories||[...DEF_CATS];items=d.items||{};}
+    else{cats=[...DEF_CATS];items={};save();}
+    activeCat?renderList():renderHome();
+  },e=>console.error("Firestore:",e));
 }
+function save(){if(!user)return;uDoc().set({categories:cats,items,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(e=>console.error("Save:",e));}
 
-function saveData() {
-  try {
-    localStorage.setItem("mylistsapp", JSON.stringify({ categories, items }));
-  } catch (e) {
-    console.error("Save failed", e);
-  }
-}
+// ===== HELPERS =====
+function getCat(id){return cats.find(c=>c.id===id);}
+function prog(id){const l=items[id]||[];return l.length?Math.round(l.filter(i=>i.done).length/l.length*100):0;}
 
-// Helpers
-function getProgress(catId) {
-  const list = items[catId] || [];
-  if (list.length === 0) return 0;
-  return Math.round((list.filter(i => i.done).length / list.length) * 100);
-}
-
-function getCat(id) {
-  return categories.find(c => c.id === id);
-}
-
-function isDefault(id) {
-  return DEFAULT_CATEGORIES.some(d => d.id === id);
-}
-
-// Render Home
-function renderHome() {
-  const grid = document.getElementById("category-grid");
-  grid.innerHTML = "";
-
-  categories.forEach((cat, idx) => {
-    const list = items[cat.id] || [];
-    const doneCount = list.filter(i => i.done).length;
-    const progress = getProgress(cat.id);
-
-    const card = document.createElement("div");
-    card.className = "card";
-    card.style.borderLeft = `4px solid ${cat.color}`;
-    card.style.animationDelay = `${idx * 0.08}s`;
-    card.onclick = () => openList(cat.id);
-
-    let deleteBtn = "";
-    if (!isDefault(cat.id)) {
-      deleteBtn = `<button class="card-delete" onclick="event.stopPropagation(); confirmDeleteCategory('${cat.id}')">×</button>`;
-    }
-
-    let progressHTML = "";
-    if (list.length > 0) {
-      progressHTML = `<div class="progress-track"><div class="progress-bar" style="width:${progress}%;background:${cat.color}"></div></div>`;
-    }
-
-    let confirmHTML = "";
-    if (confirmDeleteId === `cat-${cat.id}`) {
-      confirmHTML = `
-        <div class="confirm-overlay" onclick="event.stopPropagation()">
-          <p class="confirm-text">Delete this list?</p>
-          <div class="confirm-btns">
-            <button class="confirm-yes" onclick="deleteCategory('${cat.id}')">Yes</button>
-            <button class="confirm-no" onclick="cancelConfirm()">No</button>
-          </div>
-        </div>`;
-    }
-
-    card.innerHTML = `
-      <div class="card-top">
-        <span class="card-icon">${cat.icon}</span>
-        ${deleteBtn}
-      </div>
-      <div class="card-title">${cat.name}</div>
-      <div class="card-count">${list.length === 0 ? "No items" : `${doneCount}/${list.length} done`}</div>
-      ${progressHTML}
-      ${confirmHTML}
-    `;
-    grid.appendChild(card);
+// ===== HOME =====
+function renderHome(){
+  const g=$("cat-grid"); g.innerHTML="";
+  cats.forEach((c,i)=>{
+    const l=items[c.id]||[], dn=l.filter(x=>x.done).length, p=prog(c.id);
+    const d=document.createElement("div"); d.className="card"; d.style.borderLeft=`4px solid ${c.color}`; d.style.animationDelay=i*0.08+"s";
+    d.onclick=()=>openList(c.id);
+    d.innerHTML=`<div class="card-top"><span class="card-icon">${c.icon}</span><button class="card-del" onclick="event.stopPropagation();cfmDel='cat-${c.id}';renderHome()">×</button></div><div class="card-title">${esc(c.name)}</div><div class="card-count">${l.length?dn+"/"+l.length+" done":"No items"}</div>${l.length?`<div class="progress-track"><div class="progress-bar" style="width:${p}%;background:${c.color}"></div></div>`:""}${cfmDel==="cat-"+c.id?`<div class="confirm-ov" onclick="event.stopPropagation()"><p>Delete this list?</p><div class="btns"><button class="btn-yes" onclick="delCat('${c.id}')">Yes</button><button class="btn-no" onclick="cfmDel=null;renderHome()">No</button></div></div>`:""}`;
+    g.appendChild(d);
   });
-
-  // Add card
-  const addCard = document.createElement("div");
-  addCard.className = "card add-card";
-  addCard.onclick = () => document.getElementById("new-list-modal").classList.remove("hidden");
-  addCard.innerHTML = `<span class="add-card-plus">+</span><p class="add-card-text">New List</p>`;
-  grid.appendChild(addCard);
+  const a=document.createElement("div"); a.className="card add-card"; a.onclick=()=>showNewListModal();
+  a.innerHTML=`<span class="add-card-plus">+</span><p class="add-card-text">New List</p>`; g.appendChild(a);
 }
 
-// List View
-function openList(catId) {
-  activeCategory = catId;
-  const cat = getCat(catId);
-  document.getElementById("home-view").classList.add("hidden");
-  document.getElementById("list-view").classList.remove("hidden");
-  document.getElementById("list-header-title").innerHTML = `<span>${cat.icon}</span> ${cat.name}`;
-  document.getElementById("add-item-btn").style.background = cat.color;
-  document.getElementById("new-item-input").value = "";
-  confirmDeleteId = null;
-  editingItemId = null;
-  renderItems();
-}
+// ===== LIST =====
+function openList(id){activeCat=id;cfmDel=null;editItemId=null;editListName=false;$("home-view").classList.add("hidden");$("list-view").classList.remove("hidden");renderList();}
+function showHome(){activeCat=null;editListName=false;$("list-view").classList.add("hidden");$("home-view").classList.remove("hidden");renderHome();}
 
-function showHome() {
-  activeCategory = null;
-  document.getElementById("list-view").classList.add("hidden");
-  document.getElementById("home-view").classList.remove("hidden");
-  renderHome();
-}
-
-function renderItems() {
-  const cat = getCat(activeCategory);
-  const list = items[activeCategory] || [];
-  const pending = list.filter(i => !i.done);
-  const completed = list.filter(i => i.done);
-  const progress = getProgress(activeCategory);
-
-  // Progress
-  const progContainer = document.getElementById("list-progress");
-  if (list.length > 0) {
-    progContainer.classList.remove("hidden");
-    document.getElementById("list-progress-bar").style.width = progress + "%";
-    document.getElementById("list-progress-bar").style.background = cat.color;
-    document.getElementById("list-progress-label").textContent = progress + "%";
+function renderList(){
+  const c=getCat(activeCat);if(!c)return;
+  // Header
+  const hdr=$("list-header");
+  if(editListName){
+    hdr.innerHTML=`<button class="back-btn" onclick="showHome()">← Back</button><div class="header-center"><span class="header-icon-btn" onclick="showIconModal()">${c.icon}</span><input class="name-edit-input" id="name-edit" value="${esc(c.name)}" /></div><div class="header-spacer"></div>`;
+    const inp=$("name-edit"); setTimeout(()=>inp?.focus(),50);
+    inp.onkeydown=e=>{if(e.key==="Enter")saveName();if(e.key==="Escape"){editListName=false;renderList();}};
+    inp.onblur=()=>saveName();
   } else {
-    progContainer.classList.add("hidden");
+    hdr.innerHTML=`<button class="back-btn" onclick="showHome()">← Back</button><div class="header-center"><span class="header-icon-btn" onclick="showIconModal()">${c.icon}</span><span class="header-name" onclick="editListName=true;renderList()">${esc(c.name)} <span class="edit-hint">✎</span></span></div><div class="header-spacer"></div>`;
   }
-
-  const container = document.getElementById("item-list");
-  container.innerHTML = "";
-
-  if (list.length === 0) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <span class="empty-icon">${cat.icon}</span>
-        <p class="empty-text">No items yet</p>
-        <p class="empty-subtext">Add your first item above</p>
-      </div>`;
-    return;
+  // Content
+  const ct=$("list-content"); const l=items[activeCat]||[], pend=l.filter(x=>!x.done), comp=l.filter(x=>x.done), p=prog(activeCat);
+  let h=`<div class="input-row"><input type="text" id="new-item" placeholder="Add an item..." /><button class="add-btn" style="background:${c.color}" onclick="addItem()">+</button></div>`;
+  if(l.length) h+=`<div class="list-progress"><div class="progress-track lg"><div class="progress-bar" style="width:${p}%;background:${c.color}"></div></div><span class="progress-label">${p}%</span></div>`;
+  if(!l.length) h+=`<div class="empty-state"><span class="empty-icon">${c.icon}</span><p class="empty-text">No items yet</p><p class="empty-sub">Add your first item above</p></div>`;
+  else {
+    h+='<div class="item-list">';
+    pend.forEach(it=>{ h+=itemHTML(it,c,false); });
+    if(comp.length){ h+=`<div class="completed-hdr"><span class="completed-lbl">Completed (${comp.length})</span><button class="clear-btn" onclick="clearDone()">Clear all</button></div>`; comp.forEach(it=>{h+=itemHTML(it,c,true);}); }
+    h+='</div>';
+    h+=`<div class="action-bar"><button class="act-btn" onclick="uncheckAll()"><span style="font-size:15px">↩️</span> Uncheck All</button><button class="act-btn" onclick="dupList()"><span style="font-size:15px">📋</span> Duplicate List</button></div>`;
   }
-
-  // Pending items
-  pending.forEach(item => {
-    container.appendChild(createItemEl(item, cat, false));
-  });
-
-  // Completed
-  if (completed.length > 0) {
-    const header = document.createElement("div");
-    header.className = "completed-header";
-    header.innerHTML = `
-      <span class="completed-label">Completed (${completed.length})</span>
-      <button class="clear-btn" onclick="clearCompleted()">Clear all</button>`;
-    container.appendChild(header);
-
-    completed.forEach(item => {
-      container.appendChild(createItemEl(item, cat, true));
-    });
-  }
+  ct.innerHTML=h;
+  const ni=$("new-item"); if(ni) ni.onkeydown=e=>{if(e.key==="Enter")addItem();};
+  if(editItemId){const ei=document.getElementById("edit-"+editItemId);if(ei){ei.focus();ei.onkeydown=e=>{if(e.key==="Enter")saveItemEdit(editItemId,ei.value);if(e.key==="Escape"){editItemId=null;renderList();}};ei.onblur=()=>saveItemEdit(editItemId,ei.value);}}
 }
 
-function createItemEl(item, cat, isDone) {
-  const div = document.createElement("div");
-  div.className = "item" + (isDone ? " done" : "");
-
-  const cb = document.createElement("button");
-  cb.className = "checkbox";
-  cb.style.borderColor = cat.color;
-  if (isDone) {
-    cb.style.background = cat.color;
-    cb.innerHTML = "✓";
-  }
-  cb.onclick = () => toggleItem(item.id);
-
-  let textEl;
-  if (editingItemId === item.id) {
-    textEl = document.createElement("input");
-    textEl.className = "item-edit";
-    textEl.value = item.text;
-    textEl.onkeydown = (e) => {
-      if (e.key === "Enter") saveEdit(item.id, textEl.value);
-      if (e.key === "Escape") { editingItemId = null; renderItems(); }
-    };
-    textEl.onblur = () => saveEdit(item.id, textEl.value);
-    setTimeout(() => textEl.focus(), 50);
-  } else {
-    textEl = document.createElement("span");
-    textEl.className = "item-text";
-    textEl.textContent = item.text;
-    if (!isDone) textEl.onclick = () => { editingItemId = item.id; renderItems(); };
-  }
-
-  div.appendChild(cb);
-  div.appendChild(textEl);
-
-  if (confirmDeleteId === item.id) {
-    const conf = document.createElement("div");
-    conf.className = "inline-confirm";
-    conf.innerHTML = `
-      <button class="inline-yes" onclick="deleteItem('${item.id}')">✓</button>
-      <button class="inline-no" onclick="cancelConfirm()">✕</button>`;
-    div.appendChild(conf);
-  } else {
-    const del = document.createElement("button");
-    del.className = "item-delete";
-    del.textContent = "🗑";
-    del.onclick = () => { confirmDeleteId = item.id; renderItems(); };
-    div.appendChild(del);
-  }
-
-  return div;
+function itemHTML(it,c,done){
+  const cbStyle=done?`background:${c.color};border-color:${c.color}`:`border-color:${c.color}`;
+  let txt;
+  if(editItemId===it.id) txt=`<input class="item-edit-input" id="edit-${it.id}" value="${esc(it.text)}" />`;
+  else txt=`<span class="item-text" ${done?"":`onclick="editItemId='${it.id}';renderList()"`}>${esc(it.text)}</span>`;
+  let delHTML;
+  if(cfmDel===it.id) delHTML=`<div class="inline-cf"><button class="icf-y" onclick="delItem('${it.id}')">✓</button><button class="icf-n" onclick="cfmDel=null;renderList()">✕</button></div>`;
+  else delHTML=`<button class="del-btn" onclick="cfmDel='${it.id}';renderList()">🗑</button>`;
+  return `<div class="item${done?" done":""}"><button class="cb" style="${cbStyle}" onclick="toggleItem('${it.id}')">${done?"✓":""}</button>${txt}<button class="xfer-btn" onclick="showXferModal('${it.id}')">↗</button>${delHTML}</div>`;
 }
 
-// Actions
-function addItem() {
-  const input = document.getElementById("new-item-input");
-  const text = input.value.trim();
-  if (!text || !activeCategory) return;
+function saveName(){const inp=$("name-edit");if(inp&&inp.value.trim()){getCat(activeCat).name=inp.value.trim();save();}editListName=false;renderList();}
 
-  if (!items[activeCategory]) items[activeCategory] = [];
-  items[activeCategory].push({ id: "item-" + Date.now(), text, done: false });
-  input.value = "";
-  saveData();
-  renderItems();
-}
+// ===== ITEM ACTIONS =====
+function addItem(){const inp=$("new-item"),t=inp?.value.trim();if(!t)return;if(!items[activeCat])items[activeCat]=[];items[activeCat].push({id:"i"+Date.now(),text:t,done:false});save();renderList();}
+function toggleItem(id){const it=(items[activeCat]||[]).find(i=>i.id===id);if(it)it.done=!it.done;save();renderList();}
+function delItem(id){items[activeCat]=(items[activeCat]||[]).filter(i=>i.id!==id);cfmDel=null;save();renderList();}
+function saveItemEdit(id,v){if(v.trim()){const it=(items[activeCat]||[]).find(i=>i.id===id);if(it)it.text=v.trim();}editItemId=null;save();renderList();}
+function clearDone(){items[activeCat]=(items[activeCat]||[]).filter(i=>!i.done);save();renderList();}
+function uncheckAll(){(items[activeCat]||[]).forEach(i=>i.done=false);save();renderList();}
+function dupList(){const c=getCat(activeCat);if(!c)return;const nc={id:"c"+Date.now(),name:c.name+" (Copy)",icon:c.icon,color:c.color};cats.push(nc);items[nc.id]=(items[activeCat]||[]).map(i=>({id:"i"+Date.now()+Math.random().toString(36).slice(2,6),text:i.text,done:false}));save();openList(nc.id);}
+function delCat(id){cats=cats.filter(c=>c.id!==id);delete items[id];cfmDel=null;save();if(activeCat===id)showHome();else renderHome();}
 
-function toggleItem(itemId) {
-  const list = items[activeCategory] || [];
-  const item = list.find(i => i.id === itemId);
-  if (item) item.done = !item.done;
-  saveData();
-  renderItems();
-}
+// ===== MODALS =====
+function closeM(){$("modals").innerHTML="";}
 
-function deleteItem(itemId) {
-  items[activeCategory] = (items[activeCategory] || []).filter(i => i.id !== itemId);
-  confirmDeleteId = null;
-  saveData();
-  renderItems();
-}
-
-function saveEdit(itemId, newText) {
-  if (newText.trim()) {
-    const item = (items[activeCategory] || []).find(i => i.id === itemId);
-    if (item) item.text = newText.trim();
-    saveData();
-  }
-  editingItemId = null;
-  renderItems();
-}
-
-function clearCompleted() {
-  items[activeCategory] = (items[activeCategory] || []).filter(i => !i.done);
-  saveData();
-  renderItems();
-}
-
-function confirmDeleteCategory(catId) {
-  confirmDeleteId = `cat-${catId}`;
-  renderHome();
-}
-
-function deleteCategory(catId) {
-  categories = categories.filter(c => c.id !== catId);
-  delete items[catId];
-  confirmDeleteId = null;
-  saveData();
-  renderHome();
-}
-
-function cancelConfirm() {
-  confirmDeleteId = null;
-  if (activeCategory) renderItems();
-  else renderHome();
-}
-
-function createCategory() {
-  const input = document.getElementById("new-list-name");
-  const name = input.value.trim();
-  if (!name) return;
-
-  const newCat = {
-    id: "custom-" + Date.now(),
-    name,
-    icon: ICONS[Math.floor(Math.random() * ICONS.length)],
-    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+function showNewListModal(){
+  let si=ICONS[0],sc=COLORS[0],nm="";
+  const render=()=>{
+    $("modals").innerHTML=`<div class="modal-ov" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-title">Create New List</div>
+      <div class="preview-row"><div class="pv-icon" style="border-color:${sc}">${si}</div><span class="pv-name">${esc(nm)||"List name..."}</span></div>
+      <input class="m-input" id="nl-name" placeholder="List name..." value="${esc(nm)}" />
+      <p class="pk-label">Choose an icon</p><div class="ic-grid">${ICONS.map(i=>`<button class="ic-opt${si===i?" sel":""}" style="${si===i?`box-shadow:0 0 0 2px ${sc}`:""}" onclick="window._si='${i}';window._rnl()">${i}</button>`).join("")}</div>
+      <p class="pk-label">Choose a color</p><div class="cl-grid">${COLORS.map(c=>`<button class="cl-opt${sc===c?" sel":""}" style="background:${c};${sc===c?`box-shadow:0 0 0 3px #0f1117,0 0 0 5px ${c};transform:scale(1.15)`:""}" onclick="window._sc='${c}';window._rnl()"></button>`).join("")}</div>
+      <div class="m-btns"><button class="m-cancel" onclick="closeM()">Cancel</button><button class="m-create" style="background:linear-gradient(135deg,${sc},${sc}dd)" onclick="createCat()">Create</button></div>
+    </div></div>`;
+    const inp=$("nl-name");inp.focus();inp.oninput=()=>{nm=inp.value;$("modals").querySelector(".pv-name").textContent=nm||"List name...";};inp.onkeydown=e=>{if(e.key==="Enter")createCat();};
   };
-  categories.push(newCat);
-  input.value = "";
-  closeModal();
-  saveData();
-  renderHome();
+  window._si=si;window._sc=sc;window._rnl=()=>{si=window._si;sc=window._sc;nm=$("nl-name")?.value||nm;render();};render();
 }
+function createCat(){const nm=$("nl-name")?.value.trim();if(!nm)return;cats.push({id:"c"+Date.now(),name:nm,icon:window._si,color:window._sc});closeM();save();renderHome();}
 
-function closeModal() {
-  document.getElementById("new-list-modal").classList.add("hidden");
-  document.getElementById("new-list-name").value = "";
+function showIconModal(){
+  const c=getCat(activeCat);if(!c)return;let pi=c.icon,pc=c.color;
+  const render=()=>{
+    $("modals").innerHTML=`<div class="modal-ov" onclick="closeM()"><div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-title">Customize List</div>
+      <div class="preview-row" style="justify-content:center"><div class="pv-icon lg" style="border-color:${pc}">${pi}</div></div>
+      <p class="pk-label">Choose an icon</p><div class="ic-grid">${ICONS.map(i=>`<button class="ic-opt${pi===i?" sel":""}" style="${pi===i?`box-shadow:0 0 0 2px ${pc}`:""}" onclick="window._pi='${i}';window._ric()">${i}</button>`).join("")}</div>
+      <p class="pk-label">Choose a color</p><div class="cl-grid">${COLORS.map(cl=>`<button class="cl-opt${pc===cl?" sel":""}" style="background:${cl};${pc===cl?`box-shadow:0 0 0 3px #0f1117,0 0 0 5px ${cl};transform:scale(1.15)`:""}" onclick="window._pc='${cl}';window._ric()"></button>`).join("")}</div>
+      <div class="m-btns"><button class="m-cancel" onclick="closeM()">Cancel</button><button class="m-create" style="background:linear-gradient(135deg,${pc},${pc}dd)" onclick="saveIC()">Save</button></div>
+    </div></div>`;
+  };
+  window._pi=pi;window._pc=pc;window._ric=()=>{pi=window._pi;pc=window._pc;render();};render();
 }
+function saveIC(){const c=getCat(activeCat);if(c){c.icon=window._pi;c.color=window._pc;}closeM();save();renderList();}
 
-// Enter key for inputs
-document.getElementById("new-item-input").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") addItem();
-});
-document.getElementById("new-list-name").addEventListener("keydown", (e) => {
-  if (e.key === "Enter") createCategory();
-});
-
-// Init
-loadData();
-renderHome();
+function showXferModal(itemId){
+  const it=(items[activeCat]||[]).find(i=>i.id===itemId);if(!it)return;
+  const others=cats.filter(c=>c.id!==activeCat);
+  $("modals").innerHTML=`<div class="modal-ov" onclick="closeM()"><div class="xfer-modal" onclick="event.stopPropagation()">
+    <div class="modal-title">Send item to...</div><div class="xfer-preview">${esc(it.text)}</div>
+    ${others.length?others.map(c=>`<div class="xfer-row"><div class="xfer-info"><span class="xfer-li">${c.icon}</span><span class="xfer-ln">${esc(c.name)}</span></div><div class="xfer-acts"><button class="xfer-ab xfer-copy" onclick="copyTo('${itemId}','${c.id}')">Copy</button><button class="xfer-ab xfer-move" onclick="moveTo('${itemId}','${c.id}')">Move</button></div></div>`).join(""):'<p style="text-align:center;color:#666;padding:20px 0">No other lists available.</p>'}
+    <button class="full-cancel" onclick="closeM()">Cancel</button>
+  </div></div>`;
+}
+function copyTo(itemId,toCat){const it=(items[activeCat]||[]).find(i=>i.id===itemId);if(!it)return;if(!items[toCat])items[toCat]=[];items[toCat].push({id:"i"+Date.now(),text:it.text,done:false});closeM();save();renderList();}
+function moveTo(itemId,toCat){const it=(items[activeCat]||[]).find(i=>i.id===itemId);if(!it)return;items[activeCat]=(items[activeCat]||[]).filter(i=>i.id!==itemId);if(!items[toCat])items[toCat]=[];items[toCat].push({id:"i"+Date.now(),text:it.text,done:false});closeM();save();renderList();}
 </script>
 </body>
 </html>
