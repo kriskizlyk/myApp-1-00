@@ -239,7 +239,9 @@ async function identifyImg(dataUrl){
     const meta=parts[0];
     const b64=parts[1];
     const mtype=meta.match(/data:(.*?);/)?.[1]||'image/jpeg';
-    const body={model:'claude-3-haiku-20240307',max_tokens:100,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:mtype,data:b64}},{type:'text',text:'Identify this item in 2-5 words for a checklist. Be specific (brand, color, size if visible). Reply with ONLY the item name, no punctuation.'}]}]};
+    const listName=gC(aCat)?.name||"";
+    const prompt='You are identifying items for a checklist'+(listName?' called "'+listName+'"':'')+'. Look at this image and identify the specific product, item, or object. Include: brand name if visible, model/type, key details like size or color. Read any text on packaging or labels. Examples of good responses: "Arduino Uno R3", "DeWalt 20V Impact Driver", "Kirkland Organic Milk 2L", "Samsung 65 inch TV". Reply with ONLY the item name in 2-8 words, nothing else.';
+    const body={model:'claude-3-haiku-20240307',max_tokens:100,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:mtype,data:b64}},{type:'text',text:prompt}]}]};
     const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify(body)});
     const txt=await r.text();
     if(!r.ok){alert('API Error '+r.status+':\n'+txt);return"(API "+r.status+")"}
