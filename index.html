@@ -241,10 +241,11 @@ async function identifyImg(dataUrl){
     const mtype=meta.match(/data:(.*?);/)?.[1]||'image/jpeg';
     const body={model:'claude-3-5-haiku-20241022',max_tokens:100,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:mtype,data:b64}},{type:'text',text:'Identify this item in 2-5 words for a checklist. Be specific (brand, color, size if visible). Reply with ONLY the item name, no punctuation.'}]}]};
     const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify(body)});
-    const d=await r.json();
-    if(!r.ok){const msg=d.error?.message||JSON.stringify(d);return"(API "+r.status+": "+msg.substring(0,80)+")"}
+    const txt=await r.text();
+    if(!r.ok){alert('API Error '+r.status+':\n'+txt);return"(API "+r.status+")"}
+    const d=JSON.parse(txt);
     return d.content?.[0]?.text?.trim()||""
-  }catch(e){return"(Error: "+e.message+")"}
+  }catch(e){alert('Error: '+e.message);return"(Error: "+e.message+")"}
 }
 
 // Photo handler
