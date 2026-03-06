@@ -228,7 +228,7 @@ function saveApiKey(){
 }
 
 // Image compression
-function compressImg(file){return new Promise(res=>{const r=new FileReader();r.onload=e=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>h){if(w>400){h=(h*400)/w;w=400}}else{if(h>400){w=(w*400)/h;h=400}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',0.6))};img.src=e.target.result};r.readAsDataURL(file)})}
+function compressImg(file){return new Promise(res=>{const r=new FileReader();r.onload=e=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>h){if(w>800){h=(h*800)/w;w=800}}else{if(h>800){w=(w*800)/h;h=800}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',0.8))};img.src=e.target.result};r.readAsDataURL(file)})}
 
 // AI identify
 async function identifyImg(dataUrl){
@@ -240,31 +240,13 @@ async function identifyImg(dataUrl){
     const b64=parts[1];
     const mtype=meta.match(/data:(.*?);/)?.[1]||'image/jpeg';
     const listName=gC(aCat)?.name||"";
-    const prompt=`You are an expert product and item identifier. Your job is to identify the specific item in this photo for a checklist`+(listName?` called "${listName}"`:``)+`.
-
-IDENTIFICATION PROCESS - follow these steps in order:
-1. FIRST read ALL visible text: brand names, logos, model numbers, product names, labels, packaging text, serial numbers, part numbers, size markings, warning labels.
-2. THEN identify the specific product category and type.
-3. THEN note distinguishing features: color, size, material, quantity, variant.
-
-RULES:
-- Always prioritize text/branding you can READ on the item over guessing.
-- Use the EXACT brand name and product name if visible (e.g. "Arduino Uno R3" not "microcontroller board").
-- Include model numbers or part numbers if visible (e.g. "DeWalt DCD771" not just "DeWalt drill").
-- If it is in packaging, identify the PRODUCT inside, not the box.
-- If multiple items, identify the primary/largest item.
-- For food/grocery: include brand, product name, size/weight if visible (e.g. "Heinz Yellow Mustard 375mL").
-- For electronics: include brand, product type, model (e.g. "Samsung Galaxy S24 Ultra").
-- For hardware/parts: include specifications like size, thread, material (e.g. "3/8 inch Stainless Steel Hex Bolt").
-- For tools: include brand, type, size, voltage if applicable (e.g. "Milwaukee M18 1/2 inch Impact Wrench").
-
-Reply with ONLY the item name in 2-10 words. No sentences, no explanations, no punctuation at the end.`;
-    const body={model:'claude-3-haiku-20240307',max_tokens:150,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:mtype,data:b64}},{type:'text',text:prompt}]}]};
+    const prompt='Read all text, labels, brand names, and model numbers visible in this image. Identify the exact product or item.'+(listName?' This is for a list called "'+listName+'".':'')+' If in packaging, identify the product inside. Reply with ONLY the item name (2-10 words). Be as specific as possible using what you can read.';
+    const body={model:'claude-sonnet-4-20250514',max_tokens:60,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:mtype,data:b64}},{type:'text',text:prompt}]}]};
     const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify(body)});
     const txt=await r.text();
     if(!r.ok){alert('API Error '+r.status+':\n'+txt);return"(API "+r.status+")"}
     const d=JSON.parse(txt);
-    return d.content?.[0]?.text?.trim().replace(/[.!]$/,'')||""
+    return d.content?.[0]?.text?.trim().replace(/[.!,"']$/,'')||""
   }catch(e){alert('Error: '+e.message);return"(Error: "+e.message+")"}
 }
 
