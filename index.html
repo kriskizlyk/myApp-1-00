@@ -232,8 +232,18 @@ function compressImg(file){return new Promise(res=>{const r=new FileReader();r.o
 
 // AI identify
 async function identifyImg(dataUrl){
-  const key=getApiKey();if(!key)return"📷 Photo (set API key in Account)";
-  try{const b64=dataUrl.split(',')[1];const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:100,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:'Identify this item in 2-5 words for a checklist. Be specific (brand, color, size if visible). Reply with ONLY the item name.'}]}]})});const d=await r.json();return d.content?.[0]?.text?.trim()||"📷 Photo"}catch(e){console.error(e);return"📷 Photo"}
+  const key=getApiKey();
+  if(!key)return"(set API key in Account to enable AI)";
+  try{
+    const parts=dataUrl.split(',');
+    const meta=parts[0];
+    const b64=parts[1];
+    const mtype=meta.match(/data:(.*?);/)?.[1]||'image/jpeg';
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:100,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:mtype,data:b64}},{type:'text',text:'Identify this item in 2-5 words for a checklist. Be specific (brand, color, size if visible). Reply with ONLY the item name, no punctuation.'}]}]})});
+    if(!r.ok){const err=await r.text();console.error('API error:',r.status,err);return"(API "+r.status+": "+err.substring(0,100)+")"}
+    const d=await r.json();
+    return d.content?.[0]?.text?.trim()||""
+  }catch(e){console.error('Identify error:',e);return"(Error: "+e.message+")"}
 }
 
 // Photo handler
@@ -297,8 +307,9 @@ function rList(){const c=gC(aCat);if(!c)return;const isM=(c.type||"standard")===
 
 function rStandard(c){
   const ct=$("list-content"),l=items[aCat]||[],pn=l.filter(x=>!x.done),cp=l.filter(x=>x.done),p=prog(aCat);
-  let s='<div class="input-row"><input type="text" id="ni" placeholder="Add an item..." '+(aiLoading?'value="Identifying..." readonly style="color:#888;font-style:italic"':(pendingLabel?'value="'+esc(pendingLabel)+'"':''))+' /><button class="cam-btn" onclick="document.getElementById(\'file-input\').click()" '+(aiLoading?'disabled':'')+'>'+(aiLoading?'<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span>':'📷')+'</button><button class="add-btn" style="background:'+c.color+(aiLoading?';opacity:.5':'')+'" onclick="aI()" '+(aiLoading?'disabled':'')+'>+</button></div>';
-  if(pendingImg){s+='<div class="pending-wrap"><img class="pending-img" src="'+pendingImg+'" /><button class="pending-del" onclick="pendingImg=null;pendingLabel=\'\';rList()">✕</button><span class="pending-lbl">'+(aiLoading?'🤖 AI identifying...':'AI identified — edit if needed, tap +')+'</span></div>'}
+  const aiLabel=pendingLabel&&!pendingLabel.startsWith('(')?pendingLabel:"";
+  let s='<div class="input-row"><input type="text" id="ni" placeholder="Add an item..." '+(aiLoading?'value="Identifying..." readonly style="color:#888;font-style:italic"':(aiLabel?'value="'+esc(aiLabel)+'"':''))+' /><button class="cam-btn" onclick="document.getElementById(\'file-input\').click()" '+(aiLoading?'disabled':'')+'>'+(aiLoading?'<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span>':'📷')+'</button><button class="add-btn" style="background:'+c.color+(aiLoading?';opacity:.5':'')+'" onclick="aI()" '+(aiLoading?'disabled':'')+'>+</button></div>';
+  if(pendingImg){const isErr=pendingLabel&&pendingLabel.startsWith('(');s+='<div class="pending-wrap"><img class="pending-img" src="'+pendingImg+'" /><button class="pending-del" onclick="pendingImg=null;pendingLabel=\'\';rList()">✕</button><span class="pending-lbl" '+(isErr?'style="color:#e57373"':'')+'>'+( aiLoading?'🤖 AI identifying...':(isErr?pendingLabel:(pendingLabel?'Edit if needed, then tap +':'Type a name and tap +')))+'</span></div>'}
   if(l.length)s+='<div class="list-progress"><div class="progress-track lg"><div class="progress-bar" style="width:'+p+"%;background:"+c.color+'"></div></div><span class="progress-label">'+p+"%</span></div>";
   if(!l.length)s+='<div class="empty-state"><span class="empty-icon">'+c.icon+'</span><p class="empty-text">No items yet</p><p class="empty-sub">Add an item or snap a photo above</p></div>';
   else{s+='<div>';pn.forEach(it=>{s+=iH(it,c,false)});if(cp.length){s+='<div class="completed-hdr"><span class="completed-lbl">Completed ('+cp.length+')</span><button class="clear-btn" onclick="cD()">Clear all</button></div>';cp.forEach(it=>{s+=iH(it,c,true)})}s+="</div>";s+='<div class="action-bar"><button class="act-btn" onclick="uA()">↩️ Uncheck All</button><button class="act-btn" onclick="dL()">📋 Duplicate</button></div>'}
@@ -324,7 +335,7 @@ function delMF(id){items[aCat]=(items[aCat]||[]).filter(e=>e.id!=id);cfm=null;sa
 
 // Standard item actions
 function sN(){const inp=$("ne");if(inp&&inp.value.trim()){gC(aCat).name=inp.value.trim();save()}eLN=false;rList()}
-function aI(){if(aiLoading)return;const inp=$("ni"),t=inp?.value?.trim()||"";if(!t&&!pendingImg)return;if(!items[aCat])items[aCat]=[];const entry={id:"i"+Date.now(),text:t||"📷 Photo",done:false};if(pendingImg)entry.image=pendingImg;items[aCat].push(entry);pendingImg=null;pendingLabel="";save();rList()}
+function aI(){if(aiLoading)return;const inp=$("ni"),t=inp?.value?.trim()||"";if(!t&&!pendingImg)return;if(!items[aCat])items[aCat]=[];const entry={id:"i"+Date.now(),text:t||"Photo",done:false};if(pendingImg)entry.image=pendingImg;items[aCat].push(entry);pendingImg=null;pendingLabel="";save();rList()}
 function tI(id){const it=(items[aCat]||[]).find(i=>i.id===id);if(it)it.done=!it.done;save();rList()}
 function dI(id){items[aCat]=(items[aCat]||[]).filter(i=>i.id!==id);cfm=null;save();rList()}
 function sIE(id,v){if(v.trim()){const it=(items[aCat]||[]).find(i=>i.id===id);if(it)it.text=v.trim()}eiId=null;save();rList()}
