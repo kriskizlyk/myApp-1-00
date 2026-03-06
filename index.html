@@ -171,7 +171,7 @@ input,select{font-size:16px!important}
 <div class="auth-screen hidden" id="auth-screen"><div class="auth-logo"><span class="logo-icon">✓</span><span class="auth-logo-text">My Lists</span></div><p class="auth-subtext" id="auth-sub">Sign in to sync your lists</p><form class="auth-box" id="auth-form" autocomplete="on"><div id="auth-err" class="auth-error hidden"></div><input class="auth-input" id="auth-email" name="email" type="email" placeholder="Email address" autocomplete="username" /><input class="auth-input" id="auth-pass" name="password" type="password" placeholder="Password" autocomplete="current-password" /><input class="auth-input hidden" id="auth-pass2" name="new-password" type="password" placeholder="Confirm password" autocomplete="new-password" /><button type="submit" class="auth-btn" id="auth-btn">Sign In</button><p class="auth-toggle" id="auth-toggle">Don't have an account? <span>Sign Up</span></p></form></div>
 <div id="main-app" class="hidden"><div id="home-view"><div class="header"><div class="logo"><span class="logo-icon">✓</span> My Lists</div><div class="hdr-right"><button class="reorder-btn" id="reorder-btn" onclick="toggleReorder()">↕ Reorder</button><button class="user-btn" id="user-btn" onclick="sAcct()">👤</button></div></div><div class="content"><div id="cat-grid"></div></div></div><div id="list-view" class="hidden"><div class="header" id="list-header"></div><div class="content" id="list-content"></div></div></div>
 <div id="modals"></div>
-<input type="file" id="file-input" accept="image/*" capture="environment" style="display:none" />
+<input type="file" id="file-input" accept="image/*" style="display:none" />
 </div>
 <script>const DEV_MODE=false;</script>
 <script>
@@ -184,11 +184,7 @@ function doInstall(){if(!deferredPrompt)return;deferredPrompt.prompt();deferredP
 function dismissInstall(){installDismissed=true;document.getElementById('install-container').innerHTML=''}
 window.addEventListener('appinstalled',()=>{document.getElementById('install-container').innerHTML='';deferredPrompt=null});
 if('serviceWorker' in navigator){
-  caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k))));
-  navigator.serviceWorker.getRegistrations().then(regs=>{
-    regs.forEach(r=>r.unregister());
-    navigator.serviceWorker.register('sw.js?v=7').catch(()=>{});
-  });
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
 }
 setTimeout(()=>{const ls=document.getElementById('loading-screen');if(ls&&!ls.classList.contains('hidden')){ls.innerHTML='<p style="color:#e57373;font-size:14px;padding:20px;text-align:center">Loading timed out.<br><br><button onclick="caches.keys().then(k=>Promise.all(k.map(n=>caches.delete(n)))).then(()=>location.reload())" style="background:#4CAF50;border:none;color:#fff;padding:12px 24px;border-radius:10px;font-size:14px;cursor:pointer">Clear Cache & Reload</button></p>'}},10000);
 </script>
@@ -205,7 +201,7 @@ const COLORS=["#4CAF50","#FF9800","#2196F3","#9C27B0","#E91E63","#00BCD4","#7955
 const DC=[{id:"grocery",name:"Grocery List",icon:"🛒",color:"#4CAF50",type:"standard"},{id:"parts",name:"Parts List",icon:"🔧",color:"#FF9800",type:"standard"},{id:"trip",name:"Trip Prep",icon:"✈️",color:"#2196F3",type:"standard"}];
 const FSTATIONS=["","Co-op","Costco","Shell","Petro-Canada","Esso","Husky","Chevron","Canadian Tire Gas+","Pioneer","Fas Gas Plus","UFA","Domo","7-Eleven","Centex","Mobil","SuperStore","Tempo","Cango","BJ's","Flying J / Pilot","Other"];
 const LSK="myLists_dev";
-let user=null,cats=[],items={},aCat=null,cfm=null,eiId=null,eLN=false,isSU=false,unsub=null,reorder=false,mfOpen=false,mfEdit=null,locLoading=false,aiLoading=false,pendingImg=null,userApiKey="";
+let user=null,cats=[],items={},aCat=null,cfm=null,eiId=null,eLN=false,isSU=false,unsub=null,reorder=false,mfOpen=false,mfEdit=null,locLoading=false,aiLoading=false,pendingImg=null,pendingLabel="",userApiKey="";
 let dragIdx=null,dragOverIdx=null;const rowRefs=[];
 const $=id=>document.getElementById(id);
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
@@ -245,10 +241,11 @@ $('file-input').onchange=async function(e){
   const file=e.target.files?.[0];if(!file)return;
   const compressed=await compressImg(file);
   pendingImg=compressed;this.value='';
+  pendingLabel="Identifying...";
   aiLoading=true;rList();
   const label=await identifyImg(compressed);
+  pendingLabel=label;
   aiLoading=false;
-  const ni=$('ni');if(ni)ni.value=label;
   rList()
 };
 
@@ -267,7 +264,7 @@ function setupAuth(){
   fbAuth.onAuthStateChanged(u=>{$("loading-screen").classList.add("hidden");if(u){user=u;$("auth-screen").classList.add("hidden");$("main-app").classList.remove("hidden");startFB();showInstallBanner()}else{user=null;if(unsub){unsub();unsub=null}$("auth-screen").classList.remove("hidden");$("main-app").classList.add("hidden");aCat=null;$("home-view").classList.remove("hidden");$("list-view").classList.add("hidden")}})
 }
 function aErr(m){$("auth-err").textContent=m;$("auth-err").classList.remove("hidden")}
-function startFB(){if(unsub)unsub();unsub=fbDb.collection("users").doc(user.uid).onSnapshot(doc=>{if(doc.exists){const d=doc.data();cats=d.categories||[...DC];items=d.items||{};if(d.anthropicKey)userApiKey=d.anthropicKey;else{try{userApiKey=localStorage.getItem("myLists_apiKey")||""}catch(e){}}}else{cats=[...DC];items={};userApiKey="";save()}aCat?rList():rHome()},()=>{})}
+function startFB(){if(unsub)unsub();unsub=fbDb.collection("users").doc(user.uid).onSnapshot(doc=>{if(doc.exists){const d=doc.data();cats=d.categories||[...DC];items=d.items||{};if(d.anthropicKey)userApiKey=d.anthropicKey;else{try{userApiKey=localStorage.getItem("myLists_apiKey")||""}catch(e){}}}else{cats=[...DC];items={};userApiKey="";fbDb.collection("users").doc(user.uid).get().then(check=>{if(!check.exists){save()}})}aCat?rList():rHome()},()=>{})}
 function setupDev(){$("loading-screen").classList.add("hidden");$("main-app").classList.remove("hidden");loadLocal();rHome();showInstallBanner()}
 
 function gC(id){return cats.find(c=>c.id===id)}
@@ -293,15 +290,15 @@ function rHome(){
   else{g.className="grid";cats.forEach((c,i)=>{const l=items[c.id]||[],isM=(c.type||"standard")==="mileage";const dn=isM?0:l.filter(x=>x.done).length,p=isM?0:prog(c.id);const ct=isM?l.length+" entr"+(l.length===1?"y":"ies"):(l.length?dn+"/"+l.length+" done":"No items");let msub="";if(isM&&l.length>0){let tL=0,tK=0;l.forEach(e=>{tL+=e.liters;tK+=e.curKm-e.prevKm});if(tK>0)msub="Avg: "+fN((tL/tK)*100)+" L/100km"}const d=document.createElement("div");d.className="card";d.style.borderLeft="4px solid "+c.color;d.style.animationDelay=i*.08+"s";d.onclick=()=>oList(c.id);d.innerHTML='<div class="card-top"><span class="card-icon">'+c.icon+'</span><button class="card-del" onclick="event.stopPropagation();cfm=\'cat-'+c.id+'\';rHome()">×</button></div><div class="card-title">'+esc(c.name)+'</div><div class="card-count">'+ct+'</div>'+(msub?'<div class="card-sub" style="color:#4CAF50">'+msub+'</div>':'')+(!isM&&l.length?'<div class="progress-track"><div class="progress-bar" style="width:'+p+"%;background:"+c.color+'"></div></div>':'')+(isM?'<div class="type-badge" style="border-color:'+c.color+'">⛽ Mileage</div>':'')+(cfm==="cat-"+c.id?'<div class="confirm-ov" onclick="event.stopPropagation()"><p>Delete this list?</p><div class="btns"><button class="btn-yes" onclick="dCat(\''+c.id+"')\">Yes</button><button class=\"btn-no\" onclick=\"cfm=null;rHome()\">No</button></div></div>":"");g.appendChild(d)});const a=document.createElement("div");a.className="card add-card";a.onclick=()=>sNLM();a.innerHTML='<span class="add-card-plus">+</span><p class="add-card-text">New List</p>';g.appendChild(a)}
 }
 
-function oList(id){aCat=id;cfm=null;eiId=null;eLN=false;mfOpen=false;mfEdit=null;pendingImg=null;aiLoading=false;reorder=false;$("reorder-btn").className="reorder-btn";$("reorder-btn").textContent="↕ Reorder";$("home-view").classList.add("hidden");$("list-view").classList.remove("hidden");rList()}
-function sHome(){aCat=null;eLN=false;mfOpen=false;pendingImg=null;aiLoading=false;$("list-view").classList.add("hidden");$("home-view").classList.remove("hidden");rHome()}
+function oList(id){aCat=id;cfm=null;eiId=null;eLN=false;mfOpen=false;mfEdit=null;pendingImg=null;pendingLabel="";aiLoading=false;reorder=false;$("reorder-btn").className="reorder-btn";$("reorder-btn").textContent="↕ Reorder";$("home-view").classList.add("hidden");$("list-view").classList.remove("hidden");rList()}
+function sHome(){aCat=null;eLN=false;mfOpen=false;pendingImg=null;pendingLabel="";aiLoading=false;$("list-view").classList.add("hidden");$("home-view").classList.remove("hidden");rHome()}
 
 function rList(){const c=gC(aCat);if(!c)return;const isM=(c.type||"standard")==="mileage";const h=$("list-header");if(eLN){h.innerHTML='<button class="back-btn" onclick="sHome()">← Back</button><div class="header-center"><span class="header-icon-btn" onclick="sIM()">'+c.icon+'</span><input class="name-edit-input" id="ne" value="'+esc(c.name)+'" /></div><div class="header-spacer"></div>';const inp=$("ne");setTimeout(()=>inp&&inp.focus(),50);inp.onkeydown=e=>{if(e.key==="Enter")sN();if(e.key==="Escape"){eLN=false;rList()}};inp.onblur=()=>sN()}else{h.innerHTML='<button class="back-btn" onclick="sHome()">← Back</button><div class="header-center"><span class="header-icon-btn" onclick="sIM()">'+c.icon+'</span><span class="header-name" onclick="eLN=true;rList()">'+esc(c.name)+' <span class="edit-hint">✎</span></span></div><div class="header-spacer"></div>'}if(isM)rMileage(c);else rStandard(c)}
 
 function rStandard(c){
   const ct=$("list-content"),l=items[aCat]||[],pn=l.filter(x=>!x.done),cp=l.filter(x=>x.done),p=prog(aCat);
-  let s='<div class="input-row"><input type="text" id="ni" placeholder="Add an item..." '+(aiLoading?'value="Identifying..." readonly style="color:#888;font-style:italic"':'')+' /><button class="cam-btn" onclick="document.getElementById(\'file-input\').click()" '+(aiLoading?'disabled':'')+'>'+(aiLoading?'<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span>':'📷')+'</button><button class="add-btn" style="background:'+c.color+(aiLoading?';opacity:.5':'')+'" onclick="aI()" '+(aiLoading?'disabled':'')+'>+</button></div>';
-  if(pendingImg){s+='<div class="pending-wrap"><img class="pending-img" src="'+pendingImg+'" /><button class="pending-del" onclick="pendingImg=null;if(!aiLoading){var ni=document.getElementById(\'ni\');if(ni)ni.value=\'\';}rList()">✕</button><span class="pending-lbl">'+(aiLoading?'🤖 AI identifying...':'AI identified — edit if needed, tap +')+'</span></div>'}
+  let s='<div class="input-row"><input type="text" id="ni" placeholder="Add an item..." '+(aiLoading?'value="Identifying..." readonly style="color:#888;font-style:italic"':(pendingLabel?'value="'+esc(pendingLabel)+'"':''))+' /><button class="cam-btn" onclick="document.getElementById(\'file-input\').click()" '+(aiLoading?'disabled':'')+'>'+(aiLoading?'<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span>':'📷')+'</button><button class="add-btn" style="background:'+c.color+(aiLoading?';opacity:.5':'')+'" onclick="aI()" '+(aiLoading?'disabled':'')+'>+</button></div>';
+  if(pendingImg){s+='<div class="pending-wrap"><img class="pending-img" src="'+pendingImg+'" /><button class="pending-del" onclick="pendingImg=null;pendingLabel=\'\';rList()">✕</button><span class="pending-lbl">'+(aiLoading?'🤖 AI identifying...':'AI identified — edit if needed, tap +')+'</span></div>'}
   if(l.length)s+='<div class="list-progress"><div class="progress-track lg"><div class="progress-bar" style="width:'+p+"%;background:"+c.color+'"></div></div><span class="progress-label">'+p+"%</span></div>";
   if(!l.length)s+='<div class="empty-state"><span class="empty-icon">'+c.icon+'</span><p class="empty-text">No items yet</p><p class="empty-sub">Add an item or snap a photo above</p></div>';
   else{s+='<div>';pn.forEach(it=>{s+=iH(it,c,false)});if(cp.length){s+='<div class="completed-hdr"><span class="completed-lbl">Completed ('+cp.length+')</span><button class="clear-btn" onclick="cD()">Clear all</button></div>';cp.forEach(it=>{s+=iH(it,c,true)})}s+="</div>";s+='<div class="action-bar"><button class="act-btn" onclick="uA()">↩️ Uncheck All</button><button class="act-btn" onclick="dL()">📋 Duplicate</button></div>'}
@@ -327,7 +324,7 @@ function delMF(id){items[aCat]=(items[aCat]||[]).filter(e=>e.id!=id);cfm=null;sa
 
 // Standard item actions
 function sN(){const inp=$("ne");if(inp&&inp.value.trim()){gC(aCat).name=inp.value.trim();save()}eLN=false;rList()}
-function aI(){if(aiLoading)return;const inp=$("ni"),t=inp?.value?.trim()||"";if(!t&&!pendingImg)return;if(!items[aCat])items[aCat]=[];const entry={id:"i"+Date.now(),text:t||"📷 Photo",done:false};if(pendingImg)entry.image=pendingImg;items[aCat].push(entry);pendingImg=null;save();rList()}
+function aI(){if(aiLoading)return;const inp=$("ni"),t=inp?.value?.trim()||"";if(!t&&!pendingImg)return;if(!items[aCat])items[aCat]=[];const entry={id:"i"+Date.now(),text:t||"📷 Photo",done:false};if(pendingImg)entry.image=pendingImg;items[aCat].push(entry);pendingImg=null;pendingLabel="";save();rList()}
 function tI(id){const it=(items[aCat]||[]).find(i=>i.id===id);if(it)it.done=!it.done;save();rList()}
 function dI(id){items[aCat]=(items[aCat]||[]).filter(i=>i.id!==id);cfm=null;save();rList()}
 function sIE(id,v){if(v.trim()){const it=(items[aCat]||[]).find(i=>i.id===id);if(it)it.text=v.trim()}eiId=null;save();rList()}
@@ -361,6 +358,7 @@ Object.defineProperty(window,'eLN',{get(){return eLN},set(v){eLN=v}});
 Object.defineProperty(window,'mfOpen',{get(){return mfOpen},set(v){mfOpen=v}});
 Object.defineProperty(window,'mfEdit',{get(){return mfEdit},set(v){mfEdit=v}});
 Object.defineProperty(window,'pendingImg',{get(){return pendingImg},set(v){pendingImg=v}});
+Object.defineProperty(window,'pendingLabel',{get(){return pendingLabel},set(v){pendingLabel=v}});
 Object.defineProperty(window,'aiLoading',{get(){return aiLoading},set(v){aiLoading=v}});
 
 if(DEV_MODE)setupDev();else setupAuth();

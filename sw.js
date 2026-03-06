@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mylists-v7';
+const CACHE_NAME = 'mylists-v10';
 
 self.addEventListener('install', e => {
   self.skipWaiting();
