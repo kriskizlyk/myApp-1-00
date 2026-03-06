@@ -18,92 +18,73 @@ body{font-family:'DM Sans',-apple-system,sans-serif;background:linear-gradient(1
 .app{max-width:480px;margin:0 auto;min-height:100vh;min-height:100dvh;position:relative}
 .hidden{display:none!important}
 input,select{font-size:16px!important}
-
 .install-banner{padding:12px 20px;background:linear-gradient(135deg,rgba(76,175,80,0.15),rgba(46,125,50,0.15));border-bottom:1px solid rgba(76,175,80,0.2);display:flex;align-items:center;justify-content:space-between;gap:12px;animation:fadeSlideIn .4s ease}
 .install-text{font-size:13px;color:#ccc;flex:1}.install-text strong{color:var(--g);font-weight:600}
 .install-btn{background:linear-gradient(135deg,var(--g),var(--gd));border:none;color:#fff;padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
 .install-dismiss{background:none;border:none;color:#666;font-size:18px;cursor:pointer;padding:4px 8px}
-.ios-install-hint{padding:14px 20px;background:rgba(255,255,255,0.04);border-bottom:1px solid var(--bs);font-size:13px;color:#aaa;text-align:center;line-height:1.5;animation:fadeSlideIn .4s ease}
-.ios-install-hint strong{color:var(--t1)}
-
+.ios-install-hint{padding:14px 20px;background:rgba(255,255,255,0.04);border-bottom:1px solid var(--bs);font-size:13px;color:#aaa;text-align:center;line-height:1.5;animation:fadeSlideIn .4s ease}.ios-install-hint strong{color:var(--t1)}
 .loading-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh}
 .spinner{width:36px;height:36px;border:3px solid rgba(255,255,255,0.1);border-top-color:var(--g);border-radius:50%;animation:spin .8s linear infinite}
 .loading-text{margin-top:16px;color:var(--t2);font-size:14px}
-
 .auth-screen{padding:60px 24px 40px;display:flex;flex-direction:column;align-items:center;min-height:100vh}
-.auth-logo{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-.auth-logo-text{font-size:30px;font-weight:700;letter-spacing:-0.03em}
+.auth-logo{display:flex;align-items:center;gap:12px;margin-bottom:8px}.auth-logo-text{font-size:30px;font-weight:700;letter-spacing:-0.03em}
 .auth-subtext{font-size:15px;color:var(--t2);margin-bottom:36px}
 .auth-box{width:100%;max-width:320px}
-.auth-input{width:100%;padding:14px 18px;background:rgba(255,255,255,0.06);border:1px solid var(--bl);border-radius:14px;color:var(--t1);font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px;transition:border-color .2s}
-.auth-input:focus{border-color:var(--g)}
-.auth-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--g),var(--gd));border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:16px}
-.auth-btn:active{opacity:.85}.auth-btn:disabled{opacity:.5}
-.auth-toggle{font-size:14px;color:var(--t2);text-align:center;cursor:pointer}
-.auth-toggle span{color:var(--g);font-weight:600}
+.auth-input{width:100%;padding:14px 18px;background:rgba(255,255,255,0.06);border:1px solid var(--bl);border-radius:14px;color:var(--t1);font-family:'DM Sans',sans-serif;outline:none;margin-bottom:12px;transition:border-color .2s}.auth-input:focus{border-color:var(--g)}
+.auth-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--g),var(--gd));border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:16px}.auth-btn:active{opacity:.85}.auth-btn:disabled{opacity:.5}
+.auth-toggle{font-size:14px;color:var(--t2);text-align:center;cursor:pointer}.auth-toggle span{color:var(--g);font-weight:600}
 .auth-error{font-size:13px;color:var(--r);text-align:center;margin-bottom:12px;padding:10px;background:rgba(229,57,53,0.1);border-radius:10px}
-
 .header{padding:calc(16px + var(--st))20px 12px;position:sticky;top:0;z-index:10;background:rgba(15,17,23,0.92);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-bottom:1px solid var(--bs);display:flex;align-items:center;justify-content:space-between}
 .logo{font-size:26px;font-weight:700;letter-spacing:-0.03em;display:flex;align-items:center;gap:10px}
 .logo-icon{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;background:linear-gradient(135deg,var(--g),var(--gd));border-radius:10px;font-size:18px;font-weight:700;color:#fff;font-family:'Space Mono',monospace}
 .hdr-right{display:flex;align-items:center;gap:8px}
-.reorder-btn{background:rgba(255,255,255,0.08);border:1px solid var(--bl);color:#aaa;padding:6px 12px;border-radius:10px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}
-.reorder-btn.active{background:rgba(76,175,80,0.15);border-color:var(--g);color:var(--g)}
+.reorder-btn{background:rgba(255,255,255,0.08);border:1px solid var(--bl);color:#aaa;padding:6px 12px;border-radius:10px;font-size:12px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif}.reorder-btn.active{background:rgba(76,175,80,0.15);border-color:var(--g);color:var(--g)}
 .back-btn{background:rgba(255,255,255,0.08);border:none;color:var(--t1);padding:8px 14px;border-radius:10px;font-size:14px;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500}
-.back-btn:active{background:rgba(255,255,255,0.12)}
 .header-center{display:flex;align-items:center;gap:10px;min-width:0;flex:1;justify-content:center}
 .header-icon-btn{font-size:24px;cursor:pointer;padding:4px 6px;border-radius:8px;background:rgba(255,255,255,0.06);flex-shrink:0}
 .header-name{font-size:20px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .edit-hint{font-size:14px;opacity:.35}
 .name-edit-input{font-size:18px;font-weight:700;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:4px 10px;color:var(--t1);font-family:'DM Sans',sans-serif;outline:none;width:100%;max-width:200px;text-align:center}
 .header-spacer{width:70px}
-.user-btn{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:6px 10px;cursor:pointer;color:var(--t1);font-family:'DM Sans',sans-serif;font-size:16px;flex-shrink:0}
-
+.user-btn{display:flex;align-items:center;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:6px 10px;cursor:pointer;color:var(--t1);font-size:16px;flex-shrink:0}
 .content{padding:16px 20px calc(40px + var(--sb))}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.card{background:var(--card);border-radius:16px;padding:18px;cursor:pointer;position:relative;overflow:hidden;animation:fadeSlideIn .4s ease both;transition:transform .12s}
-.card:active{transform:scale(.97)}
-.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
-.card-icon{font-size:32px}
+.card{background:var(--card);border-radius:16px;padding:18px;cursor:pointer;position:relative;overflow:hidden;animation:fadeSlideIn .4s ease both;transition:transform .12s}.card:active{transform:scale(.97)}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}.card-icon{font-size:32px}
 .card-del{background:rgba(255,255,255,0.1);border:none;color:#999;width:24px;height:24px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.card-title{font-size:15px;font-weight:600;margin-bottom:4px}
-.card-count{font-size:12px;color:var(--t2);margin-bottom:6px}
+.card-title{font-size:15px;font-weight:600;margin-bottom:4px}.card-count{font-size:12px;color:var(--t2);margin-bottom:6px}
 .card-sub{font-size:11px;font-weight:600;margin-bottom:4px}
 .type-badge{display:inline-block;font-size:10px;font-weight:600;color:#aaa;border:1px solid;border-radius:6px;padding:2px 8px;margin-top:2px}
-.progress-track{height:4px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden}
-.progress-track.lg{height:6px}
+.progress-track{height:4px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden}.progress-track.lg{height:6px}
 .progress-bar{height:100%;border-radius:4px;transition:width .4s ease}
 .add-card{border:2px dashed rgba(255,255,255,0.12);background:transparent!important;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:140px}
-.add-card-plus{font-size:32px;color:#666;font-weight:300;margin-bottom:6px}
-.add-card-text{font-size:13px;color:#666;font-weight:500}
-
+.add-card-plus{font-size:32px;color:#666;font-weight:300;margin-bottom:6px}.add-card-text{font-size:13px;color:#666;font-weight:500}
 .reorder-list{display:flex;flex-direction:column;gap:6px;-webkit-user-select:none;user-select:none;touch-action:none}
 .reorder-card{display:flex;align-items:center;background:rgba(255,255,255,0.05);border-radius:14px;padding:14px 12px;gap:12px;transition:transform .15s ease,box-shadow .15s ease}
 .reorder-card.dragging{background:rgba(255,255,255,0.1);box-shadow:0 8px 32px rgba(0,0,0,0.4);transform:scale(1.02);z-index:100}
 .drag-handle{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,0.06);cursor:grab;flex-shrink:0;touch-action:none}
-.grip-icon{font-size:20px;color:#666;line-height:1}
-.reorder-icon{font-size:22px;flex-shrink:0}
-.reorder-name{font-size:15px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.reorder-count{font-size:12px;color:#666;flex-shrink:0}
-
+.grip-icon{font-size:20px;color:#666;line-height:1}.reorder-icon{font-size:22px;flex-shrink:0}
+.reorder-name{font-size:15px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.reorder-count{font-size:12px;color:#666;flex-shrink:0}
 .confirm-ov{position:absolute;inset:0;background:rgba(15,17,23,0.95);display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:16px;z-index:5}
-.confirm-ov p{font-size:14px;font-weight:500;margin-bottom:12px}
-.confirm-ov .btns{display:flex;gap:10px}
+.confirm-ov p{font-size:14px;font-weight:500;margin-bottom:12px}.confirm-ov .btns{display:flex;gap:10px}
 .btn-yes{background:var(--r);border:none;color:#fff;padding:6px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
 .btn-no{background:rgba(255,255,255,0.1);border:none;color:var(--t1);padding:6px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
-
-.input-row{display:flex;gap:10px;margin-bottom:16px}
+.input-row{display:flex;gap:8px;margin-bottom:16px;align-items:center}
 .input-row input{flex:1;padding:14px 18px;background:rgba(255,255,255,0.06);border:1px solid var(--bl);border-radius:14px;color:var(--t1);font-family:'DM Sans',sans-serif;outline:none}
-.add-btn{width:50px;height:50px;border-radius:14px;border:none;color:#fff;font-size:24px;font-weight:300;cursor:pointer;flex-shrink:0}
-.add-btn:active{opacity:.85}
+.cam-btn{width:50px;height:50px;border-radius:14px;border:1px solid var(--bl);background:rgba(255,255,255,0.06);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:var(--t1)}
+.cam-btn:disabled{opacity:.5}
+.add-btn{width:50px;height:50px;border-radius:14px;border:none;color:#fff;font-size:24px;font-weight:300;cursor:pointer;flex-shrink:0}.add-btn:active{opacity:.85}
+.pending-wrap{position:relative;margin-bottom:14px;background:rgba(255,255,255,0.04);border-radius:12px;padding:10px;display:flex;align-items:center;gap:12px;animation:fadeSlideIn .3s ease}
+.pending-img{width:60px;height:60px;border-radius:10px;object-fit:cover;flex-shrink:0}
+.pending-del{position:absolute;top:4px;right:4px;background:rgba(229,57,53,0.9);border:none;color:#fff;width:24px;height:24px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.pending-lbl{font-size:13px;color:#888;flex:1}
 .list-progress{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-.list-progress .progress-track{flex:1}
-.progress-label{font-size:13px;color:var(--t2);font-weight:600;min-width:36px;text-align:right}
-.item{display:flex;align-items:center;gap:10px;padding:14px 6px;border-bottom:1px solid rgba(255,255,255,0.04);animation:fadeSlideIn .3s ease both}
-.item.done{opacity:.5}
+.list-progress .progress-track{flex:1}.progress-label{font-size:13px;color:var(--t2);font-weight:600;min-width:36px;text-align:right}
+.item{display:flex;align-items:center;gap:10px;padding:14px 6px;border-bottom:1px solid rgba(255,255,255,0.04);animation:fadeSlideIn .3s ease both}.item.done{opacity:.5}
+.item-content{flex:1;display:flex;align-items:center;gap:10px;min-width:0}
+.item-thumb{width:44px;height:44px;border-radius:8px;object-fit:cover;cursor:pointer;flex-shrink:0;border:1px solid var(--bl)}
 .cb{width:26px;height:26px;border-radius:8px;border:2px solid;background:none;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;font-size:14px;font-weight:700;color:#fff}
-.item-text{flex:1;font-size:15px;line-height:1.4;cursor:pointer;word-break:break-word}
-.item.done .item-text{text-decoration:line-through}
+.item-text{flex:1;font-size:15px;line-height:1.4;cursor:pointer;word-break:break-word}.item.done .item-text{text-decoration:line-through}
 .item-edit-input{flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:6px 10px;color:var(--t1);font-family:'DM Sans',sans-serif;outline:none}
 .xfer-btn,.del-btn{background:none;border:none;font-size:16px;cursor:pointer;padding:4px 5px;opacity:.45;flex-shrink:0;color:var(--t1)}
 .inline-cf{display:flex;gap:4px;flex-shrink:0}
@@ -113,68 +94,45 @@ input,select{font-size:16px!important}
 .completed-lbl{font-size:13px;color:#666;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
 .clear-btn{background:none;border:none;color:var(--r);font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
 .empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;text-align:center}
-.empty-icon{font-size:48px;margin-bottom:16px;opacity:.4}
-.empty-text{font-size:17px;font-weight:600;color:#666;margin-bottom:6px}
-.empty-sub{font-size:14px;color:var(--t3)}
+.empty-icon{font-size:48px;margin-bottom:16px;opacity:.4}.empty-text{font-size:17px;font-weight:600;color:#666;margin-bottom:6px}.empty-sub{font-size:14px;color:var(--t3)}
 .action-bar{display:flex;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid var(--bs)}
 .act-btn{flex:1;padding:10px 12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:10px;color:#888;font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:6px}
-.act-btn:active{background:rgba(255,255,255,0.1)}
-
-/* Mileage */
-.stats-row{display:flex;gap:10px;margin-bottom:16px}
-.stat-card{flex:1;background:rgba(255,255,255,0.05);border-radius:12px;padding:12px 8px;text-align:center}
-.stat-val{font-size:18px;font-weight:700;color:var(--t1);margin-bottom:2px}
-.stat-lbl{font-size:11px;color:var(--t2);font-weight:500;text-transform:uppercase;letter-spacing:.04em}
+.stats-row{display:flex;gap:10px;margin-bottom:16px}.stat-card{flex:1;background:rgba(255,255,255,0.05);border-radius:12px;padding:12px 8px;text-align:center}
+.stat-val{font-size:18px;font-weight:700;color:var(--t1);margin-bottom:2px}.stat-lbl{font-size:11px;color:var(--t2);font-weight:500;text-transform:uppercase;letter-spacing:.04em}
 .mileage-add-btn{width:100%;padding:14px;border:none;border-radius:14px;color:#fff;font-size:15px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:16px}
 .mileage-form{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:20px;margin-bottom:16px;animation:fadeSlideIn .3s ease}
-.mf-title{font-size:16px;font-weight:700;margin-bottom:14px}
-.mf-grid{display:flex;flex-direction:column;gap:12px}
-.mf-field{display:flex;flex-direction:column;gap:4px;flex:1}
-.mf-row2{display:flex;gap:10px}
+.mf-title{font-size:16px;font-weight:700;margin-bottom:14px}.mf-grid{display:flex;flex-direction:column;gap:12px}.mf-field{display:flex;flex-direction:column;gap:4px;flex:1}.mf-row2{display:flex;gap:10px}
 .mf-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.04em}
 .mf-input{padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--t1);font-family:'DM Sans',sans-serif;outline:none;width:100%}
 .mf-select{padding:12px 14px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--t1);font-family:'DM Sans',sans-serif;outline:none;width:100%;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
 .mf-input-row{display:flex;gap:6px;align-items:center}
 .mf-auto-btn{border:none;color:#fff;width:42px;height:42px;border-radius:10px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:700}
-.mf-loc-btn{border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);color:#fff;width:42px;height:42px;border-radius:10px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.mf-loc-btn:disabled{opacity:.5}
+.mf-loc-btn{border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.06);color:#fff;width:42px;height:42px;border-radius:10px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}.mf-loc-btn:disabled{opacity:.5}
 .mf-preview{background:rgba(76,175,80,0.08);border:1px solid rgba(76,175,80,0.2);border-radius:12px;padding:12px 14px;margin-top:14px;display:flex;flex-direction:column;gap:6px}
-.mf-prev-item{display:flex;justify-content:space-between;align-items:center}
-.mf-prev-lbl{font-size:13px;color:#888}
-.mf-prev-val{font-size:14px;font-weight:600;color:#ccc}
+.mf-prev-item{display:flex;justify-content:space-between;align-items:center}.mf-prev-lbl{font-size:13px;color:#888}.mf-prev-val{font-size:14px;font-weight:600;color:#ccc}
 .mf-btns{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
 .m-entry{background:rgba(255,255,255,0.04);border-radius:14px;padding:14px 16px;margin-bottom:8px;animation:fadeSlideIn .3s ease both}
-.m-entry-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
-.m-entry-top-left{display:flex;flex-direction:column;gap:2px}
-.m-entry-date{font-size:13px;color:#888;font-weight:500}
-.m-entry-station{font-size:13px;font-weight:600;color:#ccc}
+.m-entry-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}.m-entry-top-left{display:flex;flex-direction:column;gap:2px}
+.m-entry-date{font-size:13px;color:#888;font-weight:500}.m-entry-station{font-size:13px;font-weight:600;color:#ccc}
 .m-entry-addr{font-size:12px;color:#777;margin-bottom:6px;line-height:1.3}
-.m-entry-l100{font-size:18px;font-weight:700}
-.m-entry-details{display:flex;gap:10px;margin-bottom:8px;flex-wrap:wrap}
-.m-entry-detail{font-size:12px;color:#aaa;font-weight:500}
-.m-entry-bottom{display:flex;justify-content:space-between;align-items:center}
-.m-entry-odo{font-size:11px;color:#666;font-family:'Space Mono',monospace}
-.m-entry-actions{display:flex;gap:6px}
-.m-entry-edit,.m-entry-del{background:none;border:none;font-size:14px;cursor:pointer;opacity:.45;padding:2px 6px;color:var(--t1)}
-
-/* Account */
+.m-entry-l100{font-size:18px;font-weight:700}.m-entry-details{display:flex;gap:10px;margin-bottom:8px;flex-wrap:wrap}.m-entry-detail{font-size:12px;color:#aaa;font-weight:500}
+.m-entry-bottom{display:flex;justify-content:space-between;align-items:center}.m-entry-odo{font-size:11px;color:#666;font-family:'Space Mono',monospace}
+.m-entry-actions{display:flex;gap:6px}.m-entry-edit,.m-entry-del{background:none;border:none;font-size:14px;cursor:pointer;opacity:.45;padding:2px 6px;color:var(--t1)}
 .acct-row{display:flex;align-items:center;gap:14px;padding:16px;background:rgba(255,255,255,0.04);border-radius:12px;margin-bottom:16px}
 .acct-icon{font-size:32px}.acct-email{font-size:15px;font-weight:600;margin-bottom:2px}.acct-sub{font-size:13px;color:#888}
 .acct-actions{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
 .acct-btn{display:flex;align-items:center;gap:10px;width:100%;padding:12px 16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:12px;color:#ccc;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;text-align:left}
 .acct-btn:active{background:rgba(255,255,255,0.08)}.acct-btn.danger{border-color:rgba(229,57,53,0.2);color:#e57373}
 .pw-label{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
-.pw-msg{font-size:13px;text-align:center;padding:10px 14px;border-radius:10px;margin-bottom:14px}
-.pw-msg.ok{background:rgba(76,175,80,0.15);color:#81C784}.pw-msg.err{background:rgba(229,57,53,0.1);color:#e57373}
+.pw-msg{font-size:13px;text-align:center;padding:10px 14px;border-radius:10px;margin-bottom:14px}.pw-msg.ok{background:rgba(76,175,80,0.15);color:#81C784}.pw-msg.err{background:rgba(229,57,53,0.1);color:#e57373}
 .pw-input{width:100%;padding:12px 16px;background:rgba(255,255,255,0.06);border:1px solid var(--bl);border-radius:12px;color:var(--t1);font-family:'DM Sans',sans-serif;outline:none;margin-bottom:16px}
-
-/* Type selector */
+.api-input{width:100%;padding:10px 14px;background:rgba(255,255,255,0.06);border:1px solid var(--bl);border-radius:10px;color:var(--t1);font-family:'Space Mono',monospace;font-size:12px!important;outline:none;margin-bottom:8px}
+.api-hint{font-size:11px;color:#666;margin-bottom:16px;line-height:1.4}
+.api-status{font-size:12px;margin-bottom:8px;padding:6px 10px;border-radius:8px;display:inline-block}
+.api-status.ok{background:rgba(76,175,80,0.15);color:#81C784}.api-status.none{background:rgba(255,152,0,0.15);color:#FFB74D}
 .type-row{display:flex;gap:10px;margin-bottom:16px}
 .type-btn{flex:1;padding:12px;background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.08);border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;color:#888;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;transition:all .15s}
-.type-btn.sel{border-color:var(--g);color:var(--t1);background:rgba(76,175,80,0.1)}
-.type-btn-ic{font-size:24px}
-
-/* Modal */
+.type-btn.sel{border-color:var(--g);color:var(--t1);background:rgba(76,175,80,0.1)}.type-btn-ic{font-size:24px}
 .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;z-index:50;padding:20px;animation:scaleIn .2s ease}
 .modal{background:#1e2030;border-radius:20px;padding:24px;width:100%;max-width:360px;border:1px solid rgba(255,255,255,0.08);max-height:85vh;overflow-y:auto}
 .modal-title{font-size:18px;font-weight:700;margin-bottom:16px}
@@ -185,8 +143,7 @@ input,select{font-size:16px!important}
 .m-input{width:100%;padding:12px 16px;background:rgba(255,255,255,0.06);border:1px solid var(--bl);border-radius:12px;color:var(--t1);font-family:'DM Sans',sans-serif;outline:none;margin-bottom:16px}
 .pk-label{font-size:12px;font-weight:600;color:#666;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
 .ic-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin-bottom:16px}
-.ic-opt{width:100%;aspect-ratio:1;border:none;border-radius:10px;background:rgba(255,255,255,0.05);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
-.ic-opt.sel{background:rgba(255,255,255,0.15)}
+.ic-opt{width:100%;aspect-ratio:1;border:none;border-radius:10px;background:rgba(255,255,255,0.05);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}.ic-opt.sel{background:rgba(255,255,255,0.15)}
 .cl-grid{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
 .cl-opt{width:28px;height:28px;border-radius:50%;border:none;cursor:pointer;transition:all .15s}.cl-opt.sel{transform:scale(1.15)}
 .m-btns{display:flex;gap:10px;justify-content:flex-end}
@@ -195,13 +152,13 @@ input,select{font-size:16px!important}
 .xfer-modal{background:#1e2030;border-radius:20px;padding:24px;width:100%;max-width:360px;border:1px solid rgba(255,255,255,0.08);max-height:85vh;overflow-y:auto}
 .xfer-preview{padding:10px 14px;background:rgba(255,255,255,0.04);border-radius:10px;margin-bottom:16px;font-size:15px;font-weight:500;color:#ccc}
 .xfer-row{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:10px;margin-bottom:6px}
-.xfer-info{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
-.xfer-li{font-size:20px;flex-shrink:0}.xfer-ln{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.xfer-acts{display:flex;gap:6px;flex-shrink:0}
-.xfer-ab{border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
+.xfer-info{display:flex;align-items:center;gap:10px;flex:1;min-width:0}.xfer-li{font-size:20px;flex-shrink:0}.xfer-ln{font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.xfer-acts{display:flex;gap:6px;flex-shrink:0}.xfer-ab{border:none;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif}
 .xfer-copy{background:rgba(33,150,243,0.2);color:#64B5F6}.xfer-move{background:rgba(76,175,80,0.2);color:#81C784}
 .full-cancel{width:100%;padding:12px;background:rgba(255,255,255,0.06);border:none;border-radius:10px;color:#999;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:10px}
-
+.img-view-wrap{position:relative;max-width:90vw;max-height:85vh;display:flex;align-items:center;justify-content:center}
+.img-view-full{max-width:100%;max-height:85vh;border-radius:16px;object-fit:contain}
+.img-view-close{position:absolute;top:-12px;right:-12px;background:rgba(255,255,255,0.9);border:none;color:#333;width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-weight:700}
 @keyframes fadeSlideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 @keyframes scaleIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -214,13 +171,10 @@ input,select{font-size:16px!important}
 <div class="auth-screen hidden" id="auth-screen"><div class="auth-logo"><span class="logo-icon">✓</span><span class="auth-logo-text">My Lists</span></div><p class="auth-subtext" id="auth-sub">Sign in to sync your lists</p><form class="auth-box" id="auth-form" autocomplete="on"><div id="auth-err" class="auth-error hidden"></div><input class="auth-input" id="auth-email" name="email" type="email" placeholder="Email address" autocomplete="username" /><input class="auth-input" id="auth-pass" name="password" type="password" placeholder="Password" autocomplete="current-password" /><input class="auth-input hidden" id="auth-pass2" name="new-password" type="password" placeholder="Confirm password" autocomplete="new-password" /><button type="submit" class="auth-btn" id="auth-btn">Sign In</button><p class="auth-toggle" id="auth-toggle">Don't have an account? <span>Sign Up</span></p></form></div>
 <div id="main-app" class="hidden"><div id="home-view"><div class="header"><div class="logo"><span class="logo-icon">✓</span> My Lists</div><div class="hdr-right"><button class="reorder-btn" id="reorder-btn" onclick="toggleReorder()">↕ Reorder</button><button class="user-btn" id="user-btn" onclick="sAcct()">👤</button></div></div><div class="content"><div id="cat-grid"></div></div></div><div id="list-view" class="hidden"><div class="header" id="list-header"></div><div class="content" id="list-content"></div></div></div>
 <div id="modals"></div>
+<input type="file" id="file-input" accept="image/*" capture="environment" style="display:none" />
 </div>
-
+<script>const DEV_MODE=false;</script>
 <script>
-const DEV_MODE = false;
-</script>
-<script>
-// === PWA ===
 let deferredPrompt=null,installDismissed=false;
 function isStandalone(){return window.matchMedia('(display-mode: standalone)').matches||window.navigator.standalone===true}
 function isIOS(){return/iPad|iPhone|iPod/.test(navigator.userAgent)&&!window.MSStream}
@@ -229,10 +183,11 @@ function showInstallBanner(){if(installDismissed||isStandalone())return;const c=
 function doInstall(){if(!deferredPrompt)return;deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;document.getElementById('install-container').innerHTML=''})}
 function dismissInstall(){installDismissed=true;document.getElementById('install-container').innerHTML=''}
 window.addEventListener('appinstalled',()=>{document.getElementById('install-container').innerHTML='';deferredPrompt=null});
-if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(r=>{r.forEach(x=>x.update())});navigator.serviceWorker.register('sw.js').catch(()=>{})}
+setTimeout(()=>{const ls=document.getElementById('loading-screen');if(ls&&!ls.classList.contains('hidden')){ls.innerHTML='<p style="color:#e57373;font-size:14px;padding:20px;text-align:center">Loading timed out.<br><br><button onclick="caches.keys().then(k=>Promise.all(k.map(n=>caches.delete(n)))).then(()=>location.reload())" style="background:#4CAF50;border:none;color:#fff;padding:12px 24px;border-radius:10px;font-size:14px;cursor:pointer">Clear Cache & Reload</button></p>'}},10000);
 </script>
 <script>
-if(!DEV_MODE){const s1=document.createElement('script');s1.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';document.head.appendChild(s1);s1.onload=()=>{const s2=document.createElement('script');s2.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js';document.head.appendChild(s2);s2.onload=()=>{const s3=document.createElement('script');s3.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js';document.head.appendChild(s3);s3.onload=()=>initApp()}}}
+if(!DEV_MODE){const s1=document.createElement('script');s1.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js';s1.onerror=()=>{document.getElementById('loading-screen').innerHTML='<p style="color:#e57373;padding:20px;text-align:center">Failed to load Firebase.</p>'};document.head.appendChild(s1);s1.onload=()=>{const s2=document.createElement('script');s2.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js';document.head.appendChild(s2);s2.onload=()=>{const s3=document.createElement('script');s3.src='https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js';document.head.appendChild(s3);s3.onload=()=>{try{initApp()}catch(e){document.getElementById('loading-screen').innerHTML='<p style="color:#e57373;padding:20px;text-align:center">Error: '+e.message+'</p>'}}}}}
 else{window.addEventListener('DOMContentLoaded',()=>initApp())}
 
 function initApp(){
@@ -243,13 +198,36 @@ const ICONS=["📋","📦","🏠","🎯","⭐","📌","🗂️","💼","🎒","�
 const COLORS=["#4CAF50","#FF9800","#2196F3","#9C27B0","#E91E63","#00BCD4","#795548","#607D8B","#FF5722","#3F51B5","#009688","#F44336"];
 const DC=[{id:"grocery",name:"Grocery List",icon:"🛒",color:"#4CAF50",type:"standard"},{id:"parts",name:"Parts List",icon:"🔧",color:"#FF9800",type:"standard"},{id:"trip",name:"Trip Prep",icon:"✈️",color:"#2196F3",type:"standard"}];
 const FSTATIONS=["","Co-op","Costco","Shell","Petro-Canada","Esso","Husky","Chevron","Canadian Tire Gas+","Pioneer","Fas Gas Plus","UFA","Domo","7-Eleven","Centex","Mobil","SuperStore","Tempo","Cango","BJ's","Flying J / Pilot","Other"];
-const LSK="myLists_dev";
-let user=null,cats=[],items={},aCat=null,cfm=null,eiId=null,eLN=false,isSU=false,unsub=null,reorder=false,mfOpen=false,mfEdit=null,locLoading=false;
-let dragIdx=null,dragOverIdx=null,dragOffset=0;const rowRefs=[];
+const LSK="myLists_dev",APIK="myLists_apiKey";
+let user=null,cats=[],items={},aCat=null,cfm=null,eiId=null,eLN=false,isSU=false,unsub=null,reorder=false,mfOpen=false,mfEdit=null,locLoading=false,aiLoading=false,pendingImg=null;
+let dragIdx=null,dragOverIdx=null;const rowRefs=[];
 const $=id=>document.getElementById(id);
 function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
 function fN(n,dec){dec=dec===undefined?1:dec;return isNaN(n)?"—":n.toFixed(dec)}
 function fD(d){if(!d)return"—";const p=d.split("-");return p[1]+"/"+p[2]+"/"+p[0]}
+function getApiKey(){try{return localStorage.getItem(APIK)||""}catch(e){return""}}
+function setApiKey(k){try{localStorage.setItem(APIK,k)}catch(e){}}
+
+// Image compression
+function compressImg(file){return new Promise(res=>{const r=new FileReader();r.onload=e=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>h){if(w>400){h=(h*400)/w;w=400}}else{if(h>400){w=(w*400)/h;h=400}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',0.6))};img.src=e.target.result};r.readAsDataURL(file)})}
+
+// AI identify
+async function identifyImg(dataUrl){
+  const key=getApiKey();if(!key)return"📷 Photo (set API key in Account)";
+  try{const b64=dataUrl.split(',')[1];const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:100,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:b64}},{type:'text',text:'Identify this item in 2-5 words for a checklist. Be specific (brand, color, size if visible). Reply with ONLY the item name.'}]}]})});const d=await r.json();return d.content?.[0]?.text?.trim()||"📷 Photo"}catch(e){console.error(e);return"📷 Photo"}
+}
+
+// Photo handler
+$('file-input').onchange=async function(e){
+  const file=e.target.files?.[0];if(!file)return;
+  const compressed=await compressImg(file);
+  pendingImg=compressed;this.value='';
+  aiLoading=true;rList();
+  const label=await identifyImg(compressed);
+  aiLoading=false;
+  const ni=$('ni');if(ni)ni.value=label;
+  rList()
+};
 
 // Storage
 function loadLocal(){try{const r=localStorage.getItem(LSK);if(r){const d=JSON.parse(r);cats=d.c||[...DC];items=d.i||{}}else{cats=[...DC];items={}}}catch(e){cats=[...DC];items={}}}
@@ -269,12 +247,11 @@ function aErr(m){$("auth-err").textContent=m;$("auth-err").classList.remove("hid
 function startFB(){if(unsub)unsub();unsub=fbDb.collection("users").doc(user.uid).onSnapshot(doc=>{if(doc.exists){const d=doc.data();cats=d.categories||[...DC];items=d.items||{}}else{cats=[...DC];items={};save()}aCat?rList():rHome()},()=>{})}
 function setupDev(){$("loading-screen").classList.add("hidden");$("main-app").classList.remove("hidden");loadLocal();rHome();showInstallBanner()}
 
-// Helpers
 function gC(id){return cats.find(c=>c.id===id)}
 function prog(id){const l=items[id]||[];if(!l.length)return 0;if(l[0]&&l[0].liters!==undefined)return 0;return Math.round(l.filter(i=>i.done).length/l.length*100)}
 
 // Drag
-function dStart(idx,cY){const row=rowRefs[idx];if(!row)return;dragIdx=idx;dragOverIdx=idx;dragOffset=cY-row.getBoundingClientRect().top}
+function dStart(idx,cY){const row=rowRefs[idx];if(!row)return;dragIdx=idx;dragOverIdx=idx}
 function dMove(cY){if(dragIdx===null)return;for(let i=0;i<rowRefs.length;i++){const row=rowRefs[i];if(!row)continue;const r=row.getBoundingClientRect();if(cY<r.top+r.height/2){dragOverIdx=i;rHome();return}dragOverIdx=i}rHome()}
 function dEnd(){if(dragIdx===null||dragOverIdx===null||dragIdx===dragOverIdx){dragIdx=null;dragOverIdx=null;return}const nc=[...cats];const[m]=nc.splice(dragIdx,1);nc.splice(dragOverIdx,0,m);cats=nc;dragIdx=null;dragOverIdx=null;save();rHome()}
 document.addEventListener('touchmove',e=>{if(dragIdx!==null){e.preventDefault();dMove(e.touches[0].clientY)}},{passive:false});
@@ -284,113 +261,50 @@ document.addEventListener('mouseup',()=>{if(dragIdx!==null)dEnd()});
 function toggleReorder(){reorder=!reorder;dragIdx=null;dragOverIdx=null;$("reorder-btn").className="reorder-btn"+(reorder?" active":"");$("reorder-btn").textContent=reorder?"✓ Done":"↕ Reorder";rHome()}
 
 // Location
-function getLoc(){
-  if(!navigator.geolocation){document.getElementById('mf-address').value="Not supported";return}
-  locLoading=true;const btn=document.getElementById('loc-btn');if(btn){btn.disabled=true;btn.innerHTML='<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span>'}
-  navigator.geolocation.getCurrentPosition(async pos=>{const{latitude:lat,longitude:lon}=pos.coords;try{const r=await fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lon+'&zoom=18&addressdetails=1',{headers:{"Accept-Language":"en"}});const d=await r.json();if(d&&d.address){const a=d.address;const p=[a.house_number,a.road,a.city||a.town||a.village,a.state||a.province].filter(Boolean);document.getElementById('mf-address').value=p.join(", ")||d.display_name||lat.toFixed(5)+", "+lon.toFixed(5)}else{document.getElementById('mf-address').value=lat.toFixed(5)+", "+lon.toFixed(5)}}catch(e){document.getElementById('mf-address').value=lat.toFixed(5)+", "+lon.toFixed(5)}locLoading=false;if(btn){btn.disabled=false;btn.innerHTML="📍"}},err=>{locLoading=false;if(btn){btn.disabled=false;btn.innerHTML="📍"}document.getElementById('mf-address').value=err.code===1?"Permission denied":"Could not get location"},{enableHighAccuracy:true,timeout:10000})
-}
+function getLoc(){if(!navigator.geolocation){document.getElementById('mf-address').value="Not supported";return}locLoading=true;const btn=document.getElementById('loc-btn');if(btn){btn.disabled=true;btn.innerHTML='<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span>'}navigator.geolocation.getCurrentPosition(async pos=>{const{latitude:lat,longitude:lon}=pos.coords;try{const r=await fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lon+'&zoom=18&addressdetails=1',{headers:{"Accept-Language":"en"}});const d=await r.json();if(d&&d.address){const a=d.address;const p=[a.house_number,a.road,a.city||a.town||a.village,a.state||a.province].filter(Boolean);document.getElementById('mf-address').value=p.join(", ")||d.display_name||lat.toFixed(5)+", "+lon.toFixed(5)}else{document.getElementById('mf-address').value=lat.toFixed(5)+", "+lon.toFixed(5)}}catch(e){document.getElementById('mf-address').value=lat.toFixed(5)+", "+lon.toFixed(5)}locLoading=false;if(btn){btn.disabled=false;btn.innerHTML="📍"}},err=>{locLoading=false;if(btn){btn.disabled=false;btn.innerHTML="📍"}document.getElementById('mf-address').value=err.code===1?"Permission denied":"Could not get location"},{enableHighAccuracy:true,timeout:10000})}
 
 // Home
 function rHome(){
-  const g=$("cat-grid");g.innerHTML="";
-  $("reorder-btn").style.display=cats.length>1?"inline-flex":"none";
-  if(reorder){
-    g.className="reorder-list";
-    let dc=cats.map((c,i)=>({cat:c,origIdx:i}));
-    if(dragIdx!==null&&dragOverIdx!==null&&dragIdx!==dragOverIdx){const[m]=dc.splice(dragIdx,1);dc.splice(dragOverIdx,0,m)}
-    dc.forEach((item,di)=>{const c=item.cat;const isDrag=dragIdx!==null&&item.origIdx===dragIdx;const d=document.createElement("div");d.className="reorder-card"+(isDrag?" dragging":"");d.style.borderLeft="4px solid "+c.color;rowRefs[di]=d;
-    d.innerHTML='<div class="drag-handle" data-idx="'+di+'"><span class="grip-icon">⠿</span></div><span class="reorder-icon">'+c.icon+'</span><span class="reorder-name">'+esc(c.name)+'</span><span class="reorder-count">'+((c.type||"standard")==="mileage"?"⛽":(items[c.id]||[]).length+" items")+'</span>';
-    const h=d.querySelector('.drag-handle');h.addEventListener('touchstart',e=>{e.preventDefault();dStart(di,e.touches[0].clientY)});h.addEventListener('mousedown',e=>{e.preventDefault();dStart(di,e.clientY)});g.appendChild(d)})
-  } else {
-    g.className="grid";
-    cats.forEach((c,i)=>{const l=items[c.id]||[],isM=(c.type||"standard")==="mileage";const dn=isM?0:l.filter(x=>x.done).length,p=isM?0:prog(c.id);
-    const ct=isM?l.length+" entr"+(l.length===1?"y":"ies"):(l.length?dn+"/"+l.length+" done":"No items");
-    let msub="";if(isM&&l.length>0){let tL=0,tK=0;l.forEach(e=>{tL+=e.liters;tK+=e.curKm-e.prevKm});if(tK>0)msub="Avg: "+fN((tL/tK)*100)+" L/100km"}
-    const d=document.createElement("div");d.className="card";d.style.borderLeft="4px solid "+c.color;d.style.animationDelay=i*.08+"s";d.onclick=()=>oList(c.id);
-    d.innerHTML='<div class="card-top"><span class="card-icon">'+c.icon+'</span><button class="card-del" onclick="event.stopPropagation();cfm=\'cat-'+c.id+'\';rHome()">×</button></div><div class="card-title">'+esc(c.name)+'</div><div class="card-count">'+ct+'</div>'+(msub?'<div class="card-sub" style="color:#4CAF50">'+msub+'</div>':'')+(!isM&&l.length?'<div class="progress-track"><div class="progress-bar" style="width:'+p+"%;background:"+c.color+'"></div></div>':'')+(isM?'<div class="type-badge" style="border-color:'+c.color+'">⛽ Mileage</div>':'')+(cfm==="cat-"+c.id?'<div class="confirm-ov" onclick="event.stopPropagation()"><p>Delete this list?</p><div class="btns"><button class="btn-yes" onclick="dCat(\''+c.id+"')\">Yes</button><button class=\"btn-no\" onclick=\"cfm=null;rHome()\">No</button></div></div>":"");g.appendChild(d)});
-    const a=document.createElement("div");a.className="card add-card";a.onclick=()=>sNLM();a.innerHTML='<span class="add-card-plus">+</span><p class="add-card-text">New List</p>';g.appendChild(a)
-  }
+  const g=$("cat-grid");g.innerHTML="";$("reorder-btn").style.display=cats.length>1?"inline-flex":"none";
+  if(reorder){g.className="reorder-list";let dc=cats.map((c,i)=>({cat:c,origIdx:i}));if(dragIdx!==null&&dragOverIdx!==null&&dragIdx!==dragOverIdx){const[m]=dc.splice(dragIdx,1);dc.splice(dragOverIdx,0,m)}dc.forEach((item,di)=>{const c=item.cat;const isDrag=dragIdx!==null&&item.origIdx===dragIdx;const d=document.createElement("div");d.className="reorder-card"+(isDrag?" dragging":"");d.style.borderLeft="4px solid "+c.color;rowRefs[di]=d;d.innerHTML='<div class="drag-handle"><span class="grip-icon">⠿</span></div><span class="reorder-icon">'+c.icon+'</span><span class="reorder-name">'+esc(c.name)+'</span><span class="reorder-count">'+((c.type||"standard")==="mileage"?"⛽":(items[c.id]||[]).length+" items")+'</span>';const h=d.querySelector('.drag-handle');h.addEventListener('touchstart',e=>{e.preventDefault();dStart(di,e.touches[0].clientY)});h.addEventListener('mousedown',e=>{e.preventDefault();dStart(di,e.clientY)});g.appendChild(d)})}
+  else{g.className="grid";cats.forEach((c,i)=>{const l=items[c.id]||[],isM=(c.type||"standard")==="mileage";const dn=isM?0:l.filter(x=>x.done).length,p=isM?0:prog(c.id);const ct=isM?l.length+" entr"+(l.length===1?"y":"ies"):(l.length?dn+"/"+l.length+" done":"No items");let msub="";if(isM&&l.length>0){let tL=0,tK=0;l.forEach(e=>{tL+=e.liters;tK+=e.curKm-e.prevKm});if(tK>0)msub="Avg: "+fN((tL/tK)*100)+" L/100km"}const d=document.createElement("div");d.className="card";d.style.borderLeft="4px solid "+c.color;d.style.animationDelay=i*.08+"s";d.onclick=()=>oList(c.id);d.innerHTML='<div class="card-top"><span class="card-icon">'+c.icon+'</span><button class="card-del" onclick="event.stopPropagation();cfm=\'cat-'+c.id+'\';rHome()">×</button></div><div class="card-title">'+esc(c.name)+'</div><div class="card-count">'+ct+'</div>'+(msub?'<div class="card-sub" style="color:#4CAF50">'+msub+'</div>':'')+(!isM&&l.length?'<div class="progress-track"><div class="progress-bar" style="width:'+p+"%;background:"+c.color+'"></div></div>':'')+(isM?'<div class="type-badge" style="border-color:'+c.color+'">⛽ Mileage</div>':'')+(cfm==="cat-"+c.id?'<div class="confirm-ov" onclick="event.stopPropagation()"><p>Delete this list?</p><div class="btns"><button class="btn-yes" onclick="dCat(\''+c.id+"')\">Yes</button><button class=\"btn-no\" onclick=\"cfm=null;rHome()\">No</button></div></div>":"");g.appendChild(d)});const a=document.createElement("div");a.className="card add-card";a.onclick=()=>sNLM();a.innerHTML='<span class="add-card-plus">+</span><p class="add-card-text">New List</p>';g.appendChild(a)}
 }
 
-// List
-function oList(id){aCat=id;cfm=null;eiId=null;eLN=false;mfOpen=false;mfEdit=null;reorder=false;$("reorder-btn").className="reorder-btn";$("reorder-btn").textContent="↕ Reorder";$("home-view").classList.add("hidden");$("list-view").classList.remove("hidden");rList()}
-function sHome(){aCat=null;eLN=false;mfOpen=false;$("list-view").classList.add("hidden");$("home-view").classList.remove("hidden");rHome()}
+function oList(id){aCat=id;cfm=null;eiId=null;eLN=false;mfOpen=false;mfEdit=null;pendingImg=null;aiLoading=false;reorder=false;$("reorder-btn").className="reorder-btn";$("reorder-btn").textContent="↕ Reorder";$("home-view").classList.add("hidden");$("list-view").classList.remove("hidden");rList()}
+function sHome(){aCat=null;eLN=false;mfOpen=false;pendingImg=null;aiLoading=false;$("list-view").classList.add("hidden");$("home-view").classList.remove("hidden");rHome()}
 
-function rList(){
-  const c=gC(aCat);if(!c)return;const isM=(c.type||"standard")==="mileage";
-  // Header
-  const h=$("list-header");
-  if(eLN){h.innerHTML='<button class="back-btn" onclick="sHome()">← Back</button><div class="header-center"><span class="header-icon-btn" onclick="sIM()">'+c.icon+'</span><input class="name-edit-input" id="ne" value="'+esc(c.name)+'" /></div><div class="header-spacer"></div>';const inp=$("ne");setTimeout(()=>inp&&inp.focus(),50);inp.onkeydown=e=>{if(e.key==="Enter")sN();if(e.key==="Escape"){eLN=false;rList()}};inp.onblur=()=>sN()}
-  else{h.innerHTML='<button class="back-btn" onclick="sHome()">← Back</button><div class="header-center"><span class="header-icon-btn" onclick="sIM()">'+c.icon+'</span><span class="header-name" onclick="eLN=true;rList()">'+esc(c.name)+' <span class="edit-hint">✎</span></span></div><div class="header-spacer"></div>'}
-
-  if(isM){rMileage(c)}else{rStandard(c)}
-}
+function rList(){const c=gC(aCat);if(!c)return;const isM=(c.type||"standard")==="mileage";const h=$("list-header");if(eLN){h.innerHTML='<button class="back-btn" onclick="sHome()">← Back</button><div class="header-center"><span class="header-icon-btn" onclick="sIM()">'+c.icon+'</span><input class="name-edit-input" id="ne" value="'+esc(c.name)+'" /></div><div class="header-spacer"></div>';const inp=$("ne");setTimeout(()=>inp&&inp.focus(),50);inp.onkeydown=e=>{if(e.key==="Enter")sN();if(e.key==="Escape"){eLN=false;rList()}};inp.onblur=()=>sN()}else{h.innerHTML='<button class="back-btn" onclick="sHome()">← Back</button><div class="header-center"><span class="header-icon-btn" onclick="sIM()">'+c.icon+'</span><span class="header-name" onclick="eLN=true;rList()">'+esc(c.name)+' <span class="edit-hint">✎</span></span></div><div class="header-spacer"></div>'}if(isM)rMileage(c);else rStandard(c)}
 
 function rStandard(c){
   const ct=$("list-content"),l=items[aCat]||[],pn=l.filter(x=>!x.done),cp=l.filter(x=>x.done),p=prog(aCat);
-  let s='<div class="input-row"><input type="text" id="ni" placeholder="Add an item..." /><button class="add-btn" style="background:'+c.color+'" onclick="aI()">+</button></div>';
+  let s='<div class="input-row"><input type="text" id="ni" placeholder="Add an item..." '+(aiLoading?'value="Identifying..." readonly style="color:#888;font-style:italic"':'')+' /><button class="cam-btn" onclick="document.getElementById(\'file-input\').click()" '+(aiLoading?'disabled':'')+'>'+(aiLoading?'<span style="display:inline-block;animation:spin 1s linear infinite">⟳</span>':'📷')+'</button><button class="add-btn" style="background:'+c.color+(aiLoading?';opacity:.5':'')+'" onclick="aI()" '+(aiLoading?'disabled':'')+'>+</button></div>';
+  if(pendingImg){s+='<div class="pending-wrap"><img class="pending-img" src="'+pendingImg+'" /><button class="pending-del" onclick="pendingImg=null;if(!aiLoading){var ni=document.getElementById(\'ni\');if(ni)ni.value=\'\';}rList()">✕</button><span class="pending-lbl">'+(aiLoading?'🤖 AI identifying...':'AI identified — edit if needed, tap +')+'</span></div>'}
   if(l.length)s+='<div class="list-progress"><div class="progress-track lg"><div class="progress-bar" style="width:'+p+"%;background:"+c.color+'"></div></div><span class="progress-label">'+p+"%</span></div>";
-  if(!l.length)s+='<div class="empty-state"><span class="empty-icon">'+c.icon+'</span><p class="empty-text">No items yet</p><p class="empty-sub">Add your first item above</p></div>';
-  else{s+='<div class="item-list">';pn.forEach(it=>{s+=iH(it,c,false)});if(cp.length){s+='<div class="completed-hdr"><span class="completed-lbl">Completed ('+cp.length+')</span><button class="clear-btn" onclick="cD()">Clear all</button></div>';cp.forEach(it=>{s+=iH(it,c,true)})}s+="</div>";
-  s+='<div class="action-bar"><button class="act-btn" onclick="uA()">↩️ Uncheck All</button><button class="act-btn" onclick="dL()">📋 Duplicate</button></div>'}
-  ct.innerHTML=s;const ni=$("ni");if(ni)ni.onkeydown=e=>{if(e.key==="Enter")aI()};
+  if(!l.length)s+='<div class="empty-state"><span class="empty-icon">'+c.icon+'</span><p class="empty-text">No items yet</p><p class="empty-sub">Add an item or snap a photo above</p></div>';
+  else{s+='<div>';pn.forEach(it=>{s+=iH(it,c,false)});if(cp.length){s+='<div class="completed-hdr"><span class="completed-lbl">Completed ('+cp.length+')</span><button class="clear-btn" onclick="cD()">Clear all</button></div>';cp.forEach(it=>{s+=iH(it,c,true)})}s+="</div>";s+='<div class="action-bar"><button class="act-btn" onclick="uA()">↩️ Uncheck All</button><button class="act-btn" onclick="dL()">📋 Duplicate</button></div>'}
+  ct.innerHTML=s;const ni=$("ni");if(ni&&!aiLoading)ni.onkeydown=e=>{if(e.key==="Enter")aI()};
   if(eiId){const ei=document.getElementById("e-"+eiId);if(ei){ei.focus();ei.onkeydown=e=>{if(e.key==="Enter")sIE(eiId,ei.value);if(e.key==="Escape"){eiId=null;rList()}};ei.onblur=()=>sIE(eiId,ei.value)}}
 }
 
 function iH(it,c,dn){const cs=dn?"background:"+c.color+";border-color:"+c.color:"border-color:"+c.color;
+const img=it.image?'<img class="item-thumb" src="'+it.image+'" onclick="event.stopPropagation();viewImg(\''+it.id+'\')" />':'';
 let t=eiId===it.id?'<input class="item-edit-input" id="e-'+it.id+'" value="'+esc(it.text)+'" />':'<span class="item-text" '+(dn?"":"onclick=\"eiId='"+it.id+"';rList()\"")+">"+esc(it.text)+"</span>";
 let d=cfm===it.id?'<div class="inline-cf"><button class="icf-y" onclick="dI(\''+it.id+"')\">✓</button><button class=\"icf-n\" onclick=\"cfm=null;rList()\">✕</button></div>":'<button class="del-btn" onclick="cfm=\''+it.id+"';rList()\">🗑</button>";
-return '<div class="item'+(dn?" done":"")+'"><button class="cb" style="'+cs+'" onclick="tI(\''+it.id+"')\">"+(dn?"✓":"")+"</button>"+t+'<button class="xfer-btn" onclick="sXM(\''+it.id+"')\">↗</button>"+d+"</div>"}
+return '<div class="item'+(dn?" done":"")+'"><button class="cb" style="'+cs+'" onclick="tI(\''+it.id+"')\">"+(dn?"✓":"")+'</button><div class="item-content">'+img+t+'</div><button class="xfer-btn" onclick="sXM(\''+it.id+"')\">↗</button>"+d+"</div>"}
 
-function rMileage(c){
-  const ct=$("list-content"),entries=items[aCat]||[];
-  let avgL100=0,totalL=0,totalCost=0,totalKm=0;
-  entries.forEach(e=>{totalL+=e.liters;totalCost+=(e.costPerL||0)*e.liters;totalKm+=e.curKm-e.prevKm});
-  if(totalKm>0)avgL100=(totalL/totalKm)*100;
-  let s="";
-  if(entries.length>0){s+='<div class="stats-row"><div class="stat-card"><div class="stat-val">'+fN(avgL100)+'</div><div class="stat-lbl">Avg L/100km</div></div><div class="stat-card"><div class="stat-val">'+entries.length+'</div><div class="stat-lbl">Fill-ups</div></div><div class="stat-card"><div class="stat-val">'+fN(totalKm,0)+'</div><div class="stat-lbl">Total km</div></div></div>'}
-  if(!mfOpen){s+='<button class="mileage-add-btn" style="background:'+c.color+'" onclick="openMF()">+ Add Fuel Entry</button>'}
-  if(mfOpen){
-    const ed=mfEdit;const prevAuto=!ed&&entries.length>0?entries[entries.length-1].curKm:"";
-    s+='<div class="mileage-form"><div class="mf-title">'+(ed?"Edit Entry":"New Fuel Entry")+'</div><div class="mf-grid">';
-    s+='<div class="mf-field"><label class="mf-label">Date</label><input class="mf-input" type="date" id="mf-date" value="'+(ed?ed.date:new Date().toISOString().split("T")[0])+'" /></div>';
-    s+='<div class="mf-field"><label class="mf-label">Fuel Station</label><select class="mf-select" id="mf-station">';
-    s+='<option value="">— Select station —</option>';FSTATIONS.filter(Boolean).forEach(st=>{s+='<option value="'+st+'"'+((ed&&ed.station===st)?' selected':'')+'>'+st+'</option>'});s+='</select></div>';
-    s+='<div class="mf-field"><label class="mf-label">Address / Location</label><div class="mf-input-row"><input class="mf-input" style="flex:1" type="text" id="mf-address" placeholder="e.g. 123 Main St, Saskatoon" value="'+esc(ed?ed.address||"":"")+'" /><button class="mf-loc-btn" id="loc-btn" onclick="getLoc()" title="Use current location">📍</button></div></div>';
-    s+='<div class="mf-row2"><div class="mf-field"><label class="mf-label">Cost per Liter ($)</label><input class="mf-input" type="number" step="0.001" id="mf-cpl" placeholder="0.000" value="'+(ed?ed.costPerL||"":"")+'" oninput="mfCalc()" /></div><div class="mf-field"><label class="mf-label">Liters</label><input class="mf-input" type="number" step="0.01" id="mf-lit" placeholder="0.00" value="'+(ed?ed.liters||"":"")+'" oninput="mfCalc()" /></div></div>';
-    s+='<div class="mf-row2"><div class="mf-field"><label class="mf-label">Current Mileage (km)</label><input class="mf-input" type="number" step="0.1" id="mf-cur" placeholder="0" value="'+(ed?ed.curKm||"":"")+'" oninput="mfCalc()" /></div><div class="mf-field"><label class="mf-label">Previous Mileage (km)</label><div class="mf-input-row"><input class="mf-input" style="flex:1" type="number" step="0.1" id="mf-prev" placeholder="0" value="'+(ed?ed.prevKm||"":prevAuto)+'" oninput="mfCalc()" />'+(entries.length>0?'<button class="mf-auto-btn" style="background:'+c.color+'" onclick="document.getElementById(\'mf-prev\').value=\''+entries[entries.length-1].curKm+'\';mfCalc()" title="Use last entry">↩</button>':'')+'</div></div></div>';
-    s+='</div><div id="mf-calc"></div><div class="mf-btns"><button class="m-cancel" onclick="mfOpen=false;mfEdit=null;rList()">Cancel</button><button class="m-create" style="background:linear-gradient(135deg,'+c.color+','+c.color+'dd)" onclick="saveMF()">'+(ed?"Save":"Add Entry")+'</button></div></div>';
-  }
-  if(!entries.length&&!mfOpen){s+='<div class="empty-state"><span class="empty-icon">⛽</span><p class="empty-text">No entries yet</p><p class="empty-sub">Add your first fuel entry above</p></div>'}
-  const rev=[...entries].reverse();
-  rev.forEach(e=>{const dist=e.curKm-e.prevKm,l100=dist>0?(e.liters/dist)*100:0,cost=(e.costPerL||0)*e.liters;
-  s+='<div class="m-entry"><div class="m-entry-top"><div class="m-entry-top-left"><span class="m-entry-date">'+fD(e.date)+'</span>'+(e.station?'<span class="m-entry-station">'+esc(e.station)+'</span>':'')+'</div><span class="m-entry-l100" style="color:'+c.color+'">'+fN(l100)+' L/100km</span></div>'+(e.address?'<div class="m-entry-addr">📍 '+esc(e.address)+'</div>':'')+'<div class="m-entry-details"><span class="m-entry-detail">⛽ '+fN(e.liters)+'L</span>'+(e.costPerL>0?'<span class="m-entry-detail">💲 '+fN(e.costPerL,3)+'/L</span>':'')+'<span class="m-entry-detail">📏 '+fN(dist,0)+' km</span>'+(cost>0?'<span class="m-entry-detail">💰 $'+fN(cost,2)+'</span>':'')+'</div><div class="m-entry-bottom"><span class="m-entry-odo">'+fN(e.prevKm,0)+' → '+fN(e.curKm,0)+' km</span><div class="m-entry-actions"><button class="m-entry-edit" onclick="editMF(\''+e.id+"')\">✎</button>"+(cfm===e.id?'<div class="inline-cf"><button class="icf-y" onclick="delMF(\''+e.id+"')\">✓</button><button class=\"icf-n\" onclick=\"cfm=null;rList()\">✕</button></div>":'<button class="m-entry-del" onclick="cfm=\''+e.id+"';rList()\">🗑</button>")+'</div></div></div>'});
-  if(entries.length>0){s+='<div class="action-bar"><button class="act-btn" onclick="dL()">📋 Duplicate List</button></div>'}
-  ct.innerHTML=s;if(mfOpen)mfCalc()
-}
+function viewImg(iid){const it=(items[aCat]||[]).find(i=>i.id===iid);if(it&&it.image){$("modals").innerHTML='<div class="modal-ov" onclick="clM()"><div class="img-view-wrap" onclick="event.stopPropagation()"><img class="img-view-full" src="'+it.image+'" /><button class="img-view-close" onclick="clM()">✕</button></div></div>'}}
+
+function rMileage(c){const ct=$("list-content"),entries=items[aCat]||[];let avgL100=0,totalL=0,totalCost=0,totalKm=0;entries.forEach(e=>{totalL+=e.liters;totalCost+=(e.costPerL||0)*e.liters;totalKm+=e.curKm-e.prevKm});if(totalKm>0)avgL100=(totalL/totalKm)*100;let s="";if(entries.length>0){s+='<div class="stats-row"><div class="stat-card"><div class="stat-val">'+fN(avgL100)+'</div><div class="stat-lbl">Avg L/100km</div></div><div class="stat-card"><div class="stat-val">'+entries.length+'</div><div class="stat-lbl">Fill-ups</div></div><div class="stat-card"><div class="stat-val">'+fN(totalKm,0)+'</div><div class="stat-lbl">Total km</div></div></div>'}if(!mfOpen){s+='<button class="mileage-add-btn" style="background:'+c.color+'" onclick="openMF()">+ Add Fuel Entry</button>'}if(mfOpen){const ed=mfEdit;const prevAuto=!ed&&entries.length>0?entries[entries.length-1].curKm:"";s+='<div class="mileage-form"><div class="mf-title">'+(ed?"Edit Entry":"New Fuel Entry")+'</div><div class="mf-grid"><div class="mf-field"><label class="mf-label">Date</label><input class="mf-input" type="date" id="mf-date" value="'+(ed?ed.date:new Date().toISOString().split("T")[0])+'" /></div><div class="mf-field"><label class="mf-label">Fuel Station</label><select class="mf-select" id="mf-station"><option value="">— Select station —</option>';FSTATIONS.filter(Boolean).forEach(st=>{s+='<option value="'+st+'"'+((ed&&ed.station===st)?' selected':'')+'>'+st+'</option>'});s+='</select></div><div class="mf-field"><label class="mf-label">Address / Location</label><div class="mf-input-row"><input class="mf-input" style="flex:1" type="text" id="mf-address" placeholder="e.g. 123 Main St, Saskatoon" value="'+esc(ed?ed.address||"":"")+'" /><button class="mf-loc-btn" id="loc-btn" onclick="getLoc()">📍</button></div></div><div class="mf-row2"><div class="mf-field"><label class="mf-label">Cost per Liter ($)</label><input class="mf-input" type="number" step="0.001" id="mf-cpl" placeholder="0.000" value="'+(ed?ed.costPerL||"":"")+'" oninput="mfCalc()" /></div><div class="mf-field"><label class="mf-label">Liters</label><input class="mf-input" type="number" step="0.01" id="mf-lit" placeholder="0.00" value="'+(ed?ed.liters||"":"")+'" oninput="mfCalc()" /></div></div><div class="mf-row2"><div class="mf-field"><label class="mf-label">Current Mileage (km)</label><input class="mf-input" type="number" step="0.1" id="mf-cur" placeholder="0" value="'+(ed?ed.curKm||"":"")+'" oninput="mfCalc()" /></div><div class="mf-field"><label class="mf-label">Previous Mileage (km)</label><div class="mf-input-row"><input class="mf-input" style="flex:1" type="number" step="0.1" id="mf-prev" placeholder="0" value="'+(ed?ed.prevKm||"":prevAuto)+'" oninput="mfCalc()" />'+(entries.length>0?'<button class="mf-auto-btn" style="background:'+c.color+'" onclick="document.getElementById(\'mf-prev\').value=\''+entries[entries.length-1].curKm+'\';mfCalc()">↩</button>':'')+'</div></div></div></div><div id="mf-calc"></div><div class="mf-btns"><button class="m-cancel" onclick="mfOpen=false;mfEdit=null;rList()">Cancel</button><button class="m-create" style="background:linear-gradient(135deg,'+c.color+','+c.color+'dd)" onclick="saveMF()">'+(ed?"Save":"Add Entry")+'</button></div></div>'}if(!entries.length&&!mfOpen){s+='<div class="empty-state"><span class="empty-icon">⛽</span><p class="empty-text">No entries yet</p><p class="empty-sub">Add your first fuel entry above</p></div>'}[...entries].reverse().forEach(e=>{const dist=e.curKm-e.prevKm,l100=dist>0?(e.liters/dist)*100:0,cost=(e.costPerL||0)*e.liters;s+='<div class="m-entry"><div class="m-entry-top"><div class="m-entry-top-left"><span class="m-entry-date">'+fD(e.date)+'</span>'+(e.station?'<span class="m-entry-station">'+esc(e.station)+'</span>':'')+'</div><span class="m-entry-l100" style="color:'+c.color+'">'+fN(l100)+' L/100km</span></div>'+(e.address?'<div class="m-entry-addr">📍 '+esc(e.address)+'</div>':'')+'<div class="m-entry-details"><span class="m-entry-detail">⛽ '+fN(e.liters)+'L</span>'+(e.costPerL>0?'<span class="m-entry-detail">💲 '+fN(e.costPerL,3)+'/L</span>':'')+'<span class="m-entry-detail">📏 '+fN(dist,0)+' km</span>'+(cost>0?'<span class="m-entry-detail">💰 $'+fN(cost,2)+'</span>':'')+'</div><div class="m-entry-bottom"><span class="m-entry-odo">'+fN(e.prevKm,0)+' → '+fN(e.curKm,0)+' km</span><div class="m-entry-actions"><button class="m-entry-edit" onclick="editMF(\''+e.id+"')\">✎</button>"+(cfm===e.id?'<div class="inline-cf"><button class="icf-y" onclick="delMF(\''+e.id+"')\">✓</button><button class=\"icf-n\" onclick=\"cfm=null;rList()\">✕</button></div>":'<button class="m-entry-del" onclick="cfm=\''+e.id+"';rList()\">🗑</button>")+'</div></div></div>'});if(entries.length>0){s+='<div class="action-bar"><button class="act-btn" onclick="dL()">📋 Duplicate List</button></div>'}ct.innerHTML=s;if(mfOpen)mfCalc()}
 
 function openMF(){mfOpen=true;mfEdit=null;rList()}
 function editMF(id){const e=(items[aCat]||[]).find(x=>x.id==id);if(e){mfOpen=true;mfEdit=e;rList()}}
-function mfCalc(){
-  const lit=parseFloat($("mf-lit")?.value)||0,cur=parseFloat($("mf-cur")?.value)||0,prev=parseFloat($("mf-prev")?.value)||0,cpl=parseFloat($("mf-cpl")?.value)||0;
-  const d=$("mf-calc");if(!d)return;
-  if(lit>0&&cur>prev){const dist=cur-prev,l100=(lit/dist)*100,tc=cpl*lit;
-  let h='<div class="mf-preview"><div class="mf-prev-item"><span class="mf-prev-lbl">Distance</span><span class="mf-prev-val">'+fN(dist,1)+' km</span></div><div class="mf-prev-item"><span class="mf-prev-lbl">Efficiency</span><span class="mf-prev-val" style="color:#4CAF50;font-weight:700">'+fN(l100)+' L/100km</span></div>';
-  if(cpl>0){h+='<div class="mf-prev-item"><span class="mf-prev-lbl">Total Cost</span><span class="mf-prev-val">$'+fN(tc,2)+'</span></div><div class="mf-prev-item"><span class="mf-prev-lbl">Cost per km</span><span class="mf-prev-val">$'+fN(tc/dist,3)+'/km</span></div>'}
-  d.innerHTML=h+'</div>'}else{d.innerHTML=""}
-}
-function saveMF(){
-  const date=$("mf-date")?.value,station=$("mf-station")?.value||"",address=$("mf-address")?.value?.trim()||"",cpl=parseFloat($("mf-cpl")?.value),lit=parseFloat($("mf-lit")?.value),cur=parseFloat($("mf-cur")?.value),prev=parseFloat($("mf-prev")?.value);
-  if(!date||isNaN(lit)||isNaN(cur)||isNaN(prev)||lit<=0||cur<=prev)return;
-  const entry={id:mfEdit?mfEdit.id:"i"+Date.now(),date,station,address,costPerL:isNaN(cpl)?0:cpl,liters:lit,curKm:cur,prevKm:prev};
-  if(mfEdit){items[aCat]=(items[aCat]||[]).map(e=>e.id===mfEdit.id?entry:e)}else{if(!items[aCat])items[aCat]=[];items[aCat].push(entry)}
-  mfOpen=false;mfEdit=null;save();rList()
-}
+function mfCalc(){const lit=parseFloat($("mf-lit")?.value)||0,cur=parseFloat($("mf-cur")?.value)||0,prev=parseFloat($("mf-prev")?.value)||0,cpl=parseFloat($("mf-cpl")?.value)||0;const d=$("mf-calc");if(!d)return;if(lit>0&&cur>prev){const dist=cur-prev,l100=(lit/dist)*100,tc=cpl*lit;let h='<div class="mf-preview"><div class="mf-prev-item"><span class="mf-prev-lbl">Distance</span><span class="mf-prev-val">'+fN(dist,1)+' km</span></div><div class="mf-prev-item"><span class="mf-prev-lbl">Efficiency</span><span class="mf-prev-val" style="color:#4CAF50;font-weight:700">'+fN(l100)+' L/100km</span></div>';if(cpl>0){h+='<div class="mf-prev-item"><span class="mf-prev-lbl">Total Cost</span><span class="mf-prev-val">$'+fN(tc,2)+'</span></div><div class="mf-prev-item"><span class="mf-prev-lbl">Cost per km</span><span class="mf-prev-val">$'+fN(tc/dist,3)+'/km</span></div>'}d.innerHTML=h+'</div>'}else{d.innerHTML=""}}
+function saveMF(){const date=$("mf-date")?.value,station=$("mf-station")?.value||"",address=$("mf-address")?.value?.trim()||"",cpl=parseFloat($("mf-cpl")?.value),lit=parseFloat($("mf-lit")?.value),cur=parseFloat($("mf-cur")?.value),prev=parseFloat($("mf-prev")?.value);if(!date||isNaN(lit)||isNaN(cur)||isNaN(prev)||lit<=0||cur<=prev)return;const entry={id:mfEdit?mfEdit.id:"i"+Date.now(),date,station,address,costPerL:isNaN(cpl)?0:cpl,liters:lit,curKm:cur,prevKm:prev};if(mfEdit){items[aCat]=(items[aCat]||[]).map(e=>e.id===mfEdit.id?entry:e)}else{if(!items[aCat])items[aCat]=[];items[aCat].push(entry)}mfOpen=false;mfEdit=null;save();rList()}
 function delMF(id){items[aCat]=(items[aCat]||[]).filter(e=>e.id!=id);cfm=null;save();rList()}
 
 // Standard item actions
 function sN(){const inp=$("ne");if(inp&&inp.value.trim()){gC(aCat).name=inp.value.trim();save()}eLN=false;rList()}
-function aI(){const inp=$("ni"),t=inp?.value.trim();if(!t)return;if(!items[aCat])items[aCat]=[];items[aCat].push({id:"i"+Date.now(),text:t,done:false});save();rList()}
+function aI(){if(aiLoading)return;const inp=$("ni"),t=inp?.value?.trim()||"";if(!t&&!pendingImg)return;if(!items[aCat])items[aCat]=[];const entry={id:"i"+Date.now(),text:t||"📷 Photo",done:false};if(pendingImg)entry.image=pendingImg;items[aCat].push(entry);pendingImg=null;save();rList()}
 function tI(id){const it=(items[aCat]||[]).find(i=>i.id===id);if(it)it.done=!it.done;save();rList()}
 function dI(id){items[aCat]=(items[aCat]||[]).filter(i=>i.id!==id);cfm=null;save();rList()}
 function sIE(id,v){if(v.trim()){const it=(items[aCat]||[]).find(i=>i.id===id);if(it)it.text=v.trim()}eiId=null;save();rList()}
@@ -409,20 +323,22 @@ function sXM(iid){const it=(items[aCat]||[]).find(i=>i.id===iid);if(!it)return;c
 function cpTo(iid,tid){const it=(items[aCat]||[]).find(i=>i.id===iid);if(!it)return;if(!items[tid])items[tid]=[];items[tid].push({id:"i"+Date.now(),text:it.text,done:false});clM();save();rList()}
 function mvTo(iid,tid){const it=(items[aCat]||[]).find(i=>i.id===iid);if(!it)return;items[aCat]=(items[aCat]||[]).filter(i=>i.id!==iid);if(!items[tid])items[tid]=[];items[tid].push({id:"i"+Date.now(),text:it.text,done:false});clM();save();rList()}
 
-// Account
-function sAcct(){const email=user?user.email:"dev@localhost",name=user?user.email.split("@")[0]:"Dev";$("modals").innerHTML='<div class="modal-ov" onclick="clM()"><div class="modal" onclick="event.stopPropagation()"><div class="modal-title">Account</div><div class="acct-row"><span class="acct-icon">👤</span><div><p class="acct-email">'+esc(name)+'</p><p class="acct-sub">'+esc(email)+'</p></div></div><div class="acct-actions"><button class="acct-btn" onclick="sChPw()"><span>🔒</span> Change Password</button><button class="acct-btn danger" onclick="doSignOut()"><span>↩</span> Sign Out</button></div><div class="m-btns"><button class="m-cancel" onclick="clM()">Close</button></div></div></div>'}
+// Account with API key
+function sAcct(){const email=user?user.email:"dev@localhost",name=user?user.email.split("@")[0]:"Dev";const ak=getApiKey();$("modals").innerHTML='<div class="modal-ov" onclick="clM()"><div class="modal" onclick="event.stopPropagation()"><div class="modal-title">Account</div><div class="acct-row"><span class="acct-icon">👤</span><div><p class="acct-email">'+esc(name)+'</p><p class="acct-sub">'+esc(email)+'</p></div></div><div class="acct-actions"><button class="acct-btn" onclick="sChPw()"><span>🔒</span> Change Password</button><button class="acct-btn danger" onclick="doSignOut()"><span>↩</span> Sign Out</button></div><div class="modal-title" style="font-size:15px">📷 AI Photo Recognition</div><div class="api-status '+(ak?"ok":"none")+'">'+(ak?"✓ API key saved":"⚠ No API key set")+'</div><p class="pw-label">Anthropic API Key</p><input class="api-input" id="api-key-input" type="password" placeholder="sk-ant-..." value="'+esc(ak)+'" /><p class="api-hint">Get your key at <b>console.anthropic.com</b>. Stored only on this device.</p><div class="m-btns"><button class="m-cancel" onclick="clM()">Close</button><button class="m-create" style="background:linear-gradient(135deg,#4CAF50,#2E7D32)" onclick="setApiKey(document.getElementById(\'api-key-input\').value.trim());clM()">Save Key</button></div></div></div>'}
 function doSignOut(){clM();if(unsub){unsub();unsub=null}if(!DEV_MODE)fbAuth.signOut()}
 function sChPw(){$("modals").innerHTML='<div class="modal-ov" onclick="clM()"><div class="modal" onclick="event.stopPropagation()"><div class="modal-title">Change Password</div><div id="pw-msg-box"></div><p class="pw-label">Current Password</p><input class="pw-input" type="password" id="pw-cur" placeholder="Enter current password" /><p class="pw-label">New Password</p><input class="pw-input" type="password" id="pw-new" placeholder="Min 6 characters" /><p class="pw-label">Confirm New Password</p><input class="pw-input" type="password" id="pw-cfm" placeholder="Confirm new password" /><div class="m-btns"><button class="m-cancel" onclick="sAcct()">Back</button><button class="m-create" style="background:linear-gradient(135deg,#4CAF50,#2E7D32)" onclick="doChPw()">Update Password</button></div></div></div>';$("pw-cur").focus();$("pw-cfm").onkeydown=e=>{if(e.key==="Enter")doChPw()}}
 function pwMsg(txt,ok){$("pw-msg-box").innerHTML='<div class="pw-msg '+(ok?"ok":"err")+'">'+esc(txt)+'</div>'}
-async function doChPw(){const cur=$("pw-cur").value,nw=$("pw-new").value,cf=$("pw-cfm").value;if(!cur||!nw||!cf){pwMsg("Please fill in all fields",false);return}if(nw.length<6){pwMsg("Min 6 characters",false);return}if(nw!==cf){pwMsg("Passwords don't match",false);return}if(DEV_MODE){pwMsg("Password changed! (dev)",true);setTimeout(()=>clM(),1500);return}try{const cred=firebase.auth.EmailAuthProvider.credential(user.email,cur);await user.reauthenticateWithCredential(cred);await user.updatePassword(nw);pwMsg("Password updated!",true);setTimeout(()=>clM(),1500)}catch(e){const m={"auth/wrong-password":"Current password is incorrect","auth/invalid-credential":"Current password is incorrect","auth/too-many-requests":"Too many attempts","auth/weak-password":"Password too weak"};pwMsg(m[e.code]||"Error: "+e.message,false)}}
+async function doChPw(){const cur=$("pw-cur").value,nw=$("pw-new").value,cf=$("pw-cfm").value;if(!cur||!nw||!cf){pwMsg("Please fill in all fields",false);return}if(nw.length<6){pwMsg("Min 6 characters",false);return}if(nw!==cf){pwMsg("Passwords don't match",false);return}if(DEV_MODE){pwMsg("Changed! (dev)",true);setTimeout(()=>clM(),1500);return}try{const cred=firebase.auth.EmailAuthProvider.credential(user.email,cur);await user.reauthenticateWithCredential(cred);await user.updatePassword(nw);pwMsg("Password updated!",true);setTimeout(()=>clM(),1500)}catch(e){const m={"auth/wrong-password":"Current password is incorrect","auth/invalid-credential":"Current password is incorrect","auth/too-many-requests":"Too many attempts","auth/weak-password":"Password too weak"};pwMsg(m[e.code]||"Error: "+e.message,false)}}
 
 // Globals
-window.rHome=rHome;window.rList=rList;window.oList=oList;window.sHome=sHome;window.aI=aI;window.tI=tI;window.dI=dI;window.cD=cD;window.uA=uA;window.dL=dL;window.dCat=dCat;window.clM=clM;window.sNLM=sNLM;window.cCat=cCat;window.sIM=sIM;window.sIC=sIC;window.sXM=sXM;window.cpTo=cpTo;window.mvTo=mvTo;window.sN=sN;window.sIE=sIE;window.toggleReorder=toggleReorder;window.sAcct=sAcct;window.doSignOut=doSignOut;window.sChPw=sChPw;window.doChPw=doChPw;window.openMF=openMF;window.editMF=editMF;window.saveMF=saveMF;window.delMF=delMF;window.mfCalc=mfCalc;window.getLoc=getLoc;
+window.rHome=rHome;window.rList=rList;window.oList=oList;window.sHome=sHome;window.aI=aI;window.tI=tI;window.dI=dI;window.cD=cD;window.uA=uA;window.dL=dL;window.dCat=dCat;window.clM=clM;window.sNLM=sNLM;window.cCat=cCat;window.sIM=sIM;window.sIC=sIC;window.sXM=sXM;window.cpTo=cpTo;window.mvTo=mvTo;window.sN=sN;window.sIE=sIE;window.toggleReorder=toggleReorder;window.sAcct=sAcct;window.doSignOut=doSignOut;window.sChPw=sChPw;window.doChPw=doChPw;window.openMF=openMF;window.editMF=editMF;window.saveMF=saveMF;window.delMF=delMF;window.mfCalc=mfCalc;window.getLoc=getLoc;window.viewImg=viewImg;
 Object.defineProperty(window,'cfm',{get(){return cfm},set(v){cfm=v}});
 Object.defineProperty(window,'eiId',{get(){return eiId},set(v){eiId=v}});
 Object.defineProperty(window,'eLN',{get(){return eLN},set(v){eLN=v}});
 Object.defineProperty(window,'mfOpen',{get(){return mfOpen},set(v){mfOpen=v}});
 Object.defineProperty(window,'mfEdit',{get(){return mfEdit},set(v){mfEdit=v}});
+Object.defineProperty(window,'pendingImg',{get(){return pendingImg},set(v){pendingImg=v}});
+Object.defineProperty(window,'aiLoading',{get(){return aiLoading},set(v){aiLoading=v}});
 
 if(DEV_MODE)setupDev();else setupAuth();
 }
