@@ -206,18 +206,23 @@ function esc(s){const d=document.createElement('div');d.textContent=s;return d.i
 function fN(n,dec){dec=dec===undefined?1:dec;return isNaN(n)?"—":n.toFixed(dec)}
 function fD(d){if(!d)return"—";const p=d.split("-");return p[1]+"/"+p[2]+"/"+p[0]}
 function getApiKey(){return userApiKey||""}
-function setApiKey(k){
+function saveApiKey(){
+  const k=document.getElementById('api-key-input')?.value?.trim()||"";
+  const st=document.getElementById('api-save-status');
+  if(st)st.innerHTML='<div class="pw-msg ok">Saving...</div>';
   userApiKey=k;
   try{localStorage.setItem("myLists_apiKey",k)}catch(e){}
   if(!DEV_MODE&&user){
-    fbDb.collection("users").doc(user.uid).update({anthropicKey:k}).then(()=>{
-      clM();
-    }).catch(()=>{
-      fbDb.collection("users").doc(user.uid).set({anthropicKey:k},{merge:true}).then(()=>{
-        clM();
-      }).catch(e=>{alert("Failed to save: "+e.message)});
+    fbDb.collection("users").doc(user.uid).set({anthropicKey:k},{merge:true}).then(()=>{
+      if(st)st.innerHTML='<div class="pw-msg ok">✓ Saved!</div>';
+      setTimeout(()=>clM(),800);
+    }).catch(e=>{
+      if(st)st.innerHTML='<div class="pw-msg err">Error: '+esc(e.message)+'</div>';
     });
-  } else { clM(); }
+  } else {
+    if(st)st.innerHTML='<div class="pw-msg ok">✓ Saved locally!</div>';
+    setTimeout(()=>clM(),800);
+  }
 }
 
 // Image compression
@@ -336,14 +341,14 @@ function cpTo(iid,tid){const it=(items[aCat]||[]).find(i=>i.id===iid);if(!it)ret
 function mvTo(iid,tid){const it=(items[aCat]||[]).find(i=>i.id===iid);if(!it)return;items[aCat]=(items[aCat]||[]).filter(i=>i.id!==iid);if(!items[tid])items[tid]=[];items[tid].push({id:"i"+Date.now(),text:it.text,done:false});clM();save();rList()}
 
 // Account with API key
-function sAcct(){const email=user?user.email:"dev@localhost",name=user?user.email.split("@")[0]:"Dev";const ak=getApiKey();$("modals").innerHTML='<div class="modal-ov" onclick="clM()"><div class="modal" onclick="event.stopPropagation()"><div class="modal-title">Account</div><div class="acct-row"><span class="acct-icon">👤</span><div><p class="acct-email">'+esc(name)+'</p><p class="acct-sub">'+esc(email)+'</p></div></div><div class="acct-actions"><button class="acct-btn" onclick="sChPw()"><span>🔒</span> Change Password</button><button class="acct-btn danger" onclick="doSignOut()"><span>↩</span> Sign Out</button></div><div class="modal-title" style="font-size:15px">📷 AI Photo Recognition</div><div class="api-status '+(ak?"ok":"none")+'">'+(ak?"✓ API key saved":"⚠ No API key set")+'</div><p class="pw-label">Anthropic API Key</p><input class="api-input" id="api-key-input" type="password" placeholder="sk-ant-..." value="'+esc(ak)+'" /><p class="api-hint">Get your key at <b>console.anthropic.com</b>. Stored securely in your profile.</p><div class="m-btns"><button class="m-cancel" onclick="clM()">Close</button><button class="m-create" style="background:linear-gradient(135deg,#4CAF50,#2E7D32)" onclick="setApiKey(document.getElementById(\'api-key-input\').value.trim())">Save Key</button></div></div></div>'}
+function sAcct(){const email=user?user.email:"dev@localhost",name=user?user.email.split("@")[0]:"Dev";const ak=getApiKey();$("modals").innerHTML='<div class="modal-ov" onclick="clM()"><div class="modal" onclick="event.stopPropagation()"><div class="modal-title">Account</div><div class="acct-row"><span class="acct-icon">👤</span><div><p class="acct-email">'+esc(name)+'</p><p class="acct-sub">'+esc(email)+'</p></div></div><div class="acct-actions"><button class="acct-btn" onclick="sChPw()"><span>🔒</span> Change Password</button><button class="acct-btn danger" onclick="doSignOut()"><span>↩</span> Sign Out</button></div><div class="modal-title" style="font-size:15px">📷 AI Photo Recognition</div><div class="api-status '+(ak?"ok":"none")+'">'+(ak?"✓ API key saved":"⚠ No API key set")+'</div><p class="pw-label">Anthropic API Key</p><input class="api-input" id="api-key-input" type="password" placeholder="sk-ant-..." value="'+esc(ak)+'" /><p class="api-hint">Get your key at <b>console.anthropic.com</b>. Stored securely in your profile.</p><div id="api-save-status"></div><div class="m-btns"><button class="m-cancel" onclick="clM()">Close</button><button class="m-create" style="background:linear-gradient(135deg,#4CAF50,#2E7D32)" onclick="saveApiKey()">Save Key</button></div></div></div>'}
 function doSignOut(){clM();if(unsub){unsub();unsub=null}if(!DEV_MODE)fbAuth.signOut()}
 function sChPw(){$("modals").innerHTML='<div class="modal-ov" onclick="clM()"><div class="modal" onclick="event.stopPropagation()"><div class="modal-title">Change Password</div><div id="pw-msg-box"></div><p class="pw-label">Current Password</p><input class="pw-input" type="password" id="pw-cur" placeholder="Enter current password" /><p class="pw-label">New Password</p><input class="pw-input" type="password" id="pw-new" placeholder="Min 6 characters" /><p class="pw-label">Confirm New Password</p><input class="pw-input" type="password" id="pw-cfm" placeholder="Confirm new password" /><div class="m-btns"><button class="m-cancel" onclick="sAcct()">Back</button><button class="m-create" style="background:linear-gradient(135deg,#4CAF50,#2E7D32)" onclick="doChPw()">Update Password</button></div></div></div>';$("pw-cur").focus();$("pw-cfm").onkeydown=e=>{if(e.key==="Enter")doChPw()}}
 function pwMsg(txt,ok){$("pw-msg-box").innerHTML='<div class="pw-msg '+(ok?"ok":"err")+'">'+esc(txt)+'</div>'}
 async function doChPw(){const cur=$("pw-cur").value,nw=$("pw-new").value,cf=$("pw-cfm").value;if(!cur||!nw||!cf){pwMsg("Please fill in all fields",false);return}if(nw.length<6){pwMsg("Min 6 characters",false);return}if(nw!==cf){pwMsg("Passwords don't match",false);return}if(DEV_MODE){pwMsg("Changed! (dev)",true);setTimeout(()=>clM(),1500);return}try{const cred=firebase.auth.EmailAuthProvider.credential(user.email,cur);await user.reauthenticateWithCredential(cred);await user.updatePassword(nw);pwMsg("Password updated!",true);setTimeout(()=>clM(),1500)}catch(e){const m={"auth/wrong-password":"Current password is incorrect","auth/invalid-credential":"Current password is incorrect","auth/too-many-requests":"Too many attempts","auth/weak-password":"Password too weak"};pwMsg(m[e.code]||"Error: "+e.message,false)}}
 
 // Globals
-window.rHome=rHome;window.rList=rList;window.oList=oList;window.sHome=sHome;window.aI=aI;window.tI=tI;window.dI=dI;window.cD=cD;window.uA=uA;window.dL=dL;window.dCat=dCat;window.clM=clM;window.sNLM=sNLM;window.cCat=cCat;window.sIM=sIM;window.sIC=sIC;window.sXM=sXM;window.cpTo=cpTo;window.mvTo=mvTo;window.sN=sN;window.sIE=sIE;window.toggleReorder=toggleReorder;window.sAcct=sAcct;window.doSignOut=doSignOut;window.sChPw=sChPw;window.doChPw=doChPw;window.openMF=openMF;window.editMF=editMF;window.saveMF=saveMF;window.delMF=delMF;window.mfCalc=mfCalc;window.getLoc=getLoc;window.viewImg=viewImg;
+window.rHome=rHome;window.rList=rList;window.oList=oList;window.sHome=sHome;window.aI=aI;window.tI=tI;window.dI=dI;window.cD=cD;window.uA=uA;window.dL=dL;window.dCat=dCat;window.clM=clM;window.sNLM=sNLM;window.cCat=cCat;window.sIM=sIM;window.sIC=sIC;window.sXM=sXM;window.cpTo=cpTo;window.mvTo=mvTo;window.sN=sN;window.sIE=sIE;window.toggleReorder=toggleReorder;window.sAcct=sAcct;window.doSignOut=doSignOut;window.sChPw=sChPw;window.doChPw=doChPw;window.saveApiKey=saveApiKey;window.openMF=openMF;window.editMF=editMF;window.saveMF=saveMF;window.delMF=delMF;window.mfCalc=mfCalc;window.getLoc=getLoc;window.viewImg=viewImg;
 Object.defineProperty(window,'cfm',{get(){return cfm},set(v){cfm=v}});
 Object.defineProperty(window,'eiId',{get(){return eiId},set(v){eiId=v}});
 Object.defineProperty(window,'eLN',{get(){return eLN},set(v){eLN=v}});
