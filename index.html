@@ -7,6 +7,9 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="My Lists">
 <meta name="theme-color" content="#0f1117">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>My Lists</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -184,7 +187,9 @@ function doInstall(){if(!deferredPrompt)return;deferredPrompt.prompt();deferredP
 function dismissInstall(){installDismissed=true;document.getElementById('install-container').innerHTML=''}
 window.addEventListener('appinstalled',()=>{document.getElementById('install-container').innerHTML='';deferredPrompt=null});
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').catch(()=>{});
+  navigator.serviceWorker.register('sw.js', {updateViaCache: 'none'}).then(reg => {
+    reg.update();
+  }).catch(()=>{});
 }
 setTimeout(()=>{const ls=document.getElementById('loading-screen');if(ls&&!ls.classList.contains('hidden')){ls.innerHTML='<p style="color:#e57373;font-size:14px;padding:20px;text-align:center">Loading timed out.<br><br><button onclick="caches.keys().then(k=>Promise.all(k.map(n=>caches.delete(n)))).then(()=>location.reload())" style="background:#4CAF50;border:none;color:#fff;padding:12px 24px;border-radius:10px;font-size:14px;cursor:pointer">Clear Cache & Reload</button></p>'}},10000);
 </script>

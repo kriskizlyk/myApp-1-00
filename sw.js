@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mylists-v25';
+const CACHE_NAME = 'mylists-v27';
 
 self.addEventListener('install', e => {
   self.skipWaiting();
@@ -14,17 +14,7 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
 
-  const url = new URL(e.request.url);
-
-  // Never cache HTML - always fetch fresh
-  if (e.request.mode === 'navigate' || url.pathname.endsWith('.html') || url.pathname === '/' || url.pathname === '') {
-    e.respondWith(
-      fetch(e.request).catch(() => caches.match(e.request))
-    );
-    return;
-  }
-
-  // Cache static assets (icons, fonts, manifest)
+  // Network first, cache fallback — for everything
   e.respondWith(
     fetch(e.request).then(res => {
       if (res.status === 200) {
