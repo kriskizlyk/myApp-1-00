@@ -206,7 +206,19 @@ function esc(s){const d=document.createElement('div');d.textContent=s;return d.i
 function fN(n,dec){dec=dec===undefined?1:dec;return isNaN(n)?"—":n.toFixed(dec)}
 function fD(d){if(!d)return"—";const p=d.split("-");return p[1]+"/"+p[2]+"/"+p[0]}
 function getApiKey(){return userApiKey||""}
-function setApiKey(k){userApiKey=k;if(!DEV_MODE&&user){fbDb.collection("users").doc(user.uid).set({anthropicKey:k},{merge:true}).catch(()=>{})}}
+function setApiKey(k){
+  userApiKey=k;
+  try{localStorage.setItem("myLists_apiKey",k)}catch(e){}
+  if(!DEV_MODE&&user){
+    fbDb.collection("users").doc(user.uid).update({anthropicKey:k}).then(()=>{
+      clM();
+    }).catch(()=>{
+      fbDb.collection("users").doc(user.uid).set({anthropicKey:k},{merge:true}).then(()=>{
+        clM();
+      }).catch(e=>{alert("Failed to save: "+e.message)});
+    });
+  } else { clM(); }
+}
 
 // Image compression
 function compressImg(file){return new Promise(res=>{const r=new FileReader();r.onload=e=>{const img=new Image();img.onload=()=>{const c=document.createElement('canvas');let w=img.width,h=img.height;if(w>h){if(w>400){h=(h*400)/w;w=400}}else{if(h>400){w=(w*400)/h;h=400}}c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',0.6))};img.src=e.target.result};r.readAsDataURL(file)})}
@@ -244,7 +256,7 @@ function setupAuth(){
   fbAuth.onAuthStateChanged(u=>{$("loading-screen").classList.add("hidden");if(u){user=u;$("auth-screen").classList.add("hidden");$("main-app").classList.remove("hidden");startFB();showInstallBanner()}else{user=null;if(unsub){unsub();unsub=null}$("auth-screen").classList.remove("hidden");$("main-app").classList.add("hidden");aCat=null;$("home-view").classList.remove("hidden");$("list-view").classList.add("hidden")}})
 }
 function aErr(m){$("auth-err").textContent=m;$("auth-err").classList.remove("hidden")}
-function startFB(){if(unsub)unsub();unsub=fbDb.collection("users").doc(user.uid).onSnapshot(doc=>{if(doc.exists){const d=doc.data();cats=d.categories||[...DC];items=d.items||{};userApiKey=d.anthropicKey||""}else{cats=[...DC];items={};userApiKey="";save()}aCat?rList():rHome()},()=>{})}
+function startFB(){if(unsub)unsub();unsub=fbDb.collection("users").doc(user.uid).onSnapshot(doc=>{if(doc.exists){const d=doc.data();cats=d.categories||[...DC];items=d.items||{};if(d.anthropicKey)userApiKey=d.anthropicKey;else{try{userApiKey=localStorage.getItem("myLists_apiKey")||""}catch(e){}}}else{cats=[...DC];items={};userApiKey="";save()}aCat?rList():rHome()},()=>{})}
 function setupDev(){$("loading-screen").classList.add("hidden");$("main-app").classList.remove("hidden");loadLocal();rHome();showInstallBanner()}
 
 function gC(id){return cats.find(c=>c.id===id)}
@@ -324,7 +336,7 @@ function cpTo(iid,tid){const it=(items[aCat]||[]).find(i=>i.id===iid);if(!it)ret
 function mvTo(iid,tid){const it=(items[aCat]||[]).find(i=>i.id===iid);if(!it)return;items[aCat]=(items[aCat]||[]).filter(i=>i.id!==iid);if(!items[tid])items[tid]=[];items[tid].push({id:"i"+Date.now(),text:it.text,done:false});clM();save();rList()}
 
 // Account with API key
-function sAcct(){const email=user?user.email:"dev@localhost",name=user?user.email.split("@")[0]:"Dev";const ak=getApiKey();$("modals").innerHTML='<div class="modal-ov" onclick="clM()"><div class="modal" onclick="event.stopPropagation()"><div class="modal-title">Account</div><div class="acct-row"><span class="acct-icon">👤</span><div><p class="acct-email">'+esc(name)+'</p><p class="acct-sub">'+esc(email)+'</p></div></div><div class="acct-actions"><button class="acct-btn" onclick="sChPw()"><span>🔒</span> Change Password</button><button class="acct-btn danger" onclick="doSignOut()"><span>↩</span> Sign Out</button></div><div class="modal-title" style="font-size:15px">📷 AI Photo Recognition</div><div class="api-status '+(ak?"ok":"none")+'">'+(ak?"✓ API key saved":"⚠ No API key set")+'</div><p class="pw-label">Anthropic API Key</p><input class="api-input" id="api-key-input" type="password" placeholder="sk-ant-..." value="'+esc(ak)+'" /><p class="api-hint">Get your key at <b>console.anthropic.com</b>. Stored securely in your profile.</p><div class="m-btns"><button class="m-cancel" onclick="clM()">Close</button><button class="m-create" style="background:linear-gradient(135deg,#4CAF50,#2E7D32)" onclick="setApiKey(document.getElementById(\'api-key-input\').value.trim());clM()">Save Key</button></div></div></div>'}
+function sAcct(){const email=user?user.email:"dev@localhost",name=user?user.email.split("@")[0]:"Dev";const ak=getApiKey();$("modals").innerHTML='<div class="modal-ov" onclick="clM()"><div class="modal" onclick="event.stopPropagation()"><div class="modal-title">Account</div><div class="acct-row"><span class="acct-icon">👤</span><div><p class="acct-email">'+esc(name)+'</p><p class="acct-sub">'+esc(email)+'</p></div></div><div class="acct-actions"><button class="acct-btn" onclick="sChPw()"><span>🔒</span> Change Password</button><button class="acct-btn danger" onclick="doSignOut()"><span>↩</span> Sign Out</button></div><div class="modal-title" style="font-size:15px">📷 AI Photo Recognition</div><div class="api-status '+(ak?"ok":"none")+'">'+(ak?"✓ API key saved":"⚠ No API key set")+'</div><p class="pw-label">Anthropic API Key</p><input class="api-input" id="api-key-input" type="password" placeholder="sk-ant-..." value="'+esc(ak)+'" /><p class="api-hint">Get your key at <b>console.anthropic.com</b>. Stored securely in your profile.</p><div class="m-btns"><button class="m-cancel" onclick="clM()">Close</button><button class="m-create" style="background:linear-gradient(135deg,#4CAF50,#2E7D32)" onclick="setApiKey(document.getElementById(\'api-key-input\').value.trim())">Save Key</button></div></div></div>'}
 function doSignOut(){clM();if(unsub){unsub();unsub=null}if(!DEV_MODE)fbAuth.signOut()}
 function sChPw(){$("modals").innerHTML='<div class="modal-ov" onclick="clM()"><div class="modal" onclick="event.stopPropagation()"><div class="modal-title">Change Password</div><div id="pw-msg-box"></div><p class="pw-label">Current Password</p><input class="pw-input" type="password" id="pw-cur" placeholder="Enter current password" /><p class="pw-label">New Password</p><input class="pw-input" type="password" id="pw-new" placeholder="Min 6 characters" /><p class="pw-label">Confirm New Password</p><input class="pw-input" type="password" id="pw-cfm" placeholder="Confirm new password" /><div class="m-btns"><button class="m-cancel" onclick="sAcct()">Back</button><button class="m-create" style="background:linear-gradient(135deg,#4CAF50,#2E7D32)" onclick="doChPw()">Update Password</button></div></div></div>';$("pw-cur").focus();$("pw-cfm").onkeydown=e=>{if(e.key==="Enter")doChPw()}}
 function pwMsg(txt,ok){$("pw-msg-box").innerHTML='<div class="pw-msg '+(ok?"ok":"err")+'">'+esc(txt)+'</div>'}
