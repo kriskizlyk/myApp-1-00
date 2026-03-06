@@ -183,7 +183,13 @@ function showInstallBanner(){if(installDismissed||isStandalone())return;const c=
 function doInstall(){if(!deferredPrompt)return;deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;document.getElementById('install-container').innerHTML=''})}
 function dismissInstall(){installDismissed=true;document.getElementById('install-container').innerHTML=''}
 window.addEventListener('appinstalled',()=>{document.getElementById('install-container').innerHTML='';deferredPrompt=null});
-if('serviceWorker' in navigator){navigator.serviceWorker.getRegistrations().then(r=>{r.forEach(x=>x.update())});navigator.serviceWorker.register('sw.js').catch(()=>{})}
+if('serviceWorker' in navigator){
+  caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k))));
+  navigator.serviceWorker.getRegistrations().then(regs=>{
+    regs.forEach(r=>r.unregister());
+    navigator.serviceWorker.register('sw.js?v=7').catch(()=>{});
+  });
+}
 setTimeout(()=>{const ls=document.getElementById('loading-screen');if(ls&&!ls.classList.contains('hidden')){ls.innerHTML='<p style="color:#e57373;font-size:14px;padding:20px;text-align:center">Loading timed out.<br><br><button onclick="caches.keys().then(k=>Promise.all(k.map(n=>caches.delete(n)))).then(()=>location.reload())" style="background:#4CAF50;border:none;color:#fff;padding:12px 24px;border-radius:10px;font-size:14px;cursor:pointer">Clear Cache & Reload</button></p>'}},10000);
 </script>
 <script>
@@ -348,7 +354,7 @@ function pwMsg(txt,ok){$("pw-msg-box").innerHTML='<div class="pw-msg '+(ok?"ok":
 async function doChPw(){const cur=$("pw-cur").value,nw=$("pw-new").value,cf=$("pw-cfm").value;if(!cur||!nw||!cf){pwMsg("Please fill in all fields",false);return}if(nw.length<6){pwMsg("Min 6 characters",false);return}if(nw!==cf){pwMsg("Passwords don't match",false);return}if(DEV_MODE){pwMsg("Changed! (dev)",true);setTimeout(()=>clM(),1500);return}try{const cred=firebase.auth.EmailAuthProvider.credential(user.email,cur);await user.reauthenticateWithCredential(cred);await user.updatePassword(nw);pwMsg("Password updated!",true);setTimeout(()=>clM(),1500)}catch(e){const m={"auth/wrong-password":"Current password is incorrect","auth/invalid-credential":"Current password is incorrect","auth/too-many-requests":"Too many attempts","auth/weak-password":"Password too weak"};pwMsg(m[e.code]||"Error: "+e.message,false)}}
 
 // Globals
-window.rHome=rHome;window.rList=rList;window.oList=oList;window.sHome=sHome;window.aI=aI;window.tI=tI;window.dI=dI;window.cD=cD;window.uA=uA;window.dL=dL;window.dCat=dCat;window.clM=clM;window.sNLM=sNLM;window.cCat=cCat;window.sIM=sIM;window.sIC=sIC;window.sXM=sXM;window.cpTo=cpTo;window.mvTo=mvTo;window.sN=sN;window.sIE=sIE;window.toggleReorder=toggleReorder;window.sAcct=sAcct;window.doSignOut=doSignOut;window.sChPw=sChPw;window.doChPw=doChPw;window.saveApiKey=saveApiKey;window.openMF=openMF;window.editMF=editMF;window.saveMF=saveMF;window.delMF=delMF;window.mfCalc=mfCalc;window.getLoc=getLoc;window.viewImg=viewImg;
+window.rHome=rHome;window.rList=rList;window.oList=oList;window.sHome=sHome;window.aI=aI;window.tI=tI;window.dI=dI;window.cD=cD;window.uA=uA;window.dL=dL;window.dCat=dCat;window.clM=clM;window.sNLM=sNLM;window.cCat=cCat;window.sIM=sIM;window.sIC=sIC;window.sXM=sXM;window.cpTo=cpTo;window.mvTo=mvTo;window.sN=sN;window.sIE=sIE;window.toggleReorder=toggleReorder;window.sAcct=sAcct;window.doSignOut=doSignOut;window.sChPw=sChPw;window.doChPw=doChPw;window.saveApiKey=saveApiKey;window.setApiKey=saveApiKey;window.openMF=openMF;window.editMF=editMF;window.saveMF=saveMF;window.delMF=delMF;window.mfCalc=mfCalc;window.getLoc=getLoc;window.viewImg=viewImg;
 Object.defineProperty(window,'cfm',{get(){return cfm},set(v){cfm=v}});
 Object.defineProperty(window,'eiId',{get(){return eiId},set(v){eiId=v}});
 Object.defineProperty(window,'eLN',{get(){return eLN},set(v){eLN=v}});
