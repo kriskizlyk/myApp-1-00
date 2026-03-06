@@ -272,16 +272,18 @@ $('file-input').onchange=async function(e){
 function loadLocal(){try{const r=localStorage.getItem(LSK);if(r){const d=JSON.parse(r);cats=d.c||[...DC];items=d.i||{}}else{cats=[...DC];items={}}}catch(e){cats=[...DC];items={}}}
 function saveLocal(){try{localStorage.setItem(LSK,JSON.stringify({c:cats,i:items}))}catch(e){}}
 function saveFB(){if(!user)return;fbDb.collection("users").doc(user.uid).set({categories:cats,items,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(()=>{})}
-let lastAutoBackup=0;const AUTO_BACKUP_INTERVAL=5*60*1000;
+let lastAutoBackup=0;const AUTO_BACKUP_INTERVAL=60*1000;let changeLog=[];
+function logChange(msg){changeLog.push(msg);if(changeLog.length>50)changeLog=changeLog.slice(-50)}
 function save(){DEV_MODE?saveLocal():saveFB();autoBackup()}
 function autoBackup(){
-  if(DEV_MODE||!user)return;
+  if(DEV_MODE||!user||!changeLog.length)return;
   const now=Date.now();
   if(now-lastAutoBackup<AUTO_BACKUP_INTERVAL)return;
   lastAutoBackup=now;
-  const data={categories:cats,items:items,anthropicKey:userApiKey,createdAt:firebase.firestore.FieldValue.serverTimestamp(),auto:true};
+  const changes=changeLog.length?changeLog.join(", "):"No tracked changes";
+  const data={categories:cats,items:items,anthropicKey:userApiKey,createdAt:firebase.firestore.FieldValue.serverTimestamp(),auto:true,changes:changes};
+  changeLog=[];
   fbDb.collection("users").doc(user.uid).collection("backups").add(data).then(()=>{
-    // Clean up old auto-backups, keep last 20
     fbDb.collection("users").doc(user.uid).collection("backups").orderBy("createdAt","desc").get().then(snap=>{
       const autoDocs=[...snap.docs].filter(d=>d.data().auto===true);
       if(autoDocs.length>20){autoDocs.slice(20).forEach(d=>d.ref.delete())}
@@ -355,27 +357,27 @@ function rMileage(c){const ct=$("list-content"),entries=items[aCat]||[];let avgL
 function openMF(){mfOpen=true;mfEdit=null;rList()}
 function editMF(id){const e=(items[aCat]||[]).find(x=>x.id==id);if(e){mfOpen=true;mfEdit=e;rList()}}
 function mfCalc(){const lit=parseFloat($("mf-lit")?.value)||0,cur=parseFloat($("mf-cur")?.value)||0,prev=parseFloat($("mf-prev")?.value)||0,cpl=parseFloat($("mf-cpl")?.value)||0;const d=$("mf-calc");if(!d)return;if(lit>0&&cur>prev){const dist=cur-prev,l100=(lit/dist)*100,tc=cpl*lit;let h='<div class="mf-preview"><div class="mf-prev-item"><span class="mf-prev-lbl">Distance</span><span class="mf-prev-val">'+fN(dist,1)+' km</span></div><div class="mf-prev-item"><span class="mf-prev-lbl">Efficiency</span><span class="mf-prev-val" style="color:#4CAF50;font-weight:700">'+fN(l100)+' L/100km</span></div>';if(cpl>0){h+='<div class="mf-prev-item"><span class="mf-prev-lbl">Total Cost</span><span class="mf-prev-val">$'+fN(tc,2)+'</span></div><div class="mf-prev-item"><span class="mf-prev-lbl">Cost per km</span><span class="mf-prev-val">$'+fN(tc/dist,3)+'/km</span></div>'}d.innerHTML=h+'</div>'}else{d.innerHTML=""}}
-function saveMF(){const date=$("mf-date")?.value,station=$("mf-station")?.value||"",address=$("mf-address")?.value?.trim()||"",cpl=parseFloat($("mf-cpl")?.value),lit=parseFloat($("mf-lit")?.value),cur=parseFloat($("mf-cur")?.value),prev=parseFloat($("mf-prev")?.value);if(!date||isNaN(lit)||isNaN(cur)||isNaN(prev)||lit<=0||cur<=prev)return;const entry={id:mfEdit?mfEdit.id:"i"+Date.now(),date,station,address,costPerL:isNaN(cpl)?0:cpl,liters:lit,curKm:cur,prevKm:prev};if(mfEdit){items[aCat]=(items[aCat]||[]).map(e=>e.id===mfEdit.id?entry:e)}else{if(!items[aCat])items[aCat]=[];items[aCat].push(entry)}mfOpen=false;mfEdit=null;save();rList()}
-function delMF(id){items[aCat]=(items[aCat]||[]).filter(e=>e.id!=id);cfm=null;save();rList()}
+function saveMF(){const date=$("mf-date")?.value,station=$("mf-station")?.value||"",address=$("mf-address")?.value?.trim()||"",cpl=parseFloat($("mf-cpl")?.value),lit=parseFloat($("mf-lit")?.value),cur=parseFloat($("mf-cur")?.value),prev=parseFloat($("mf-prev")?.value);if(!date||isNaN(lit)||isNaN(cur)||isNaN(prev)||lit<=0||cur<=prev)return;const entry={id:mfEdit?mfEdit.id:"i"+Date.now(),date,station,address,costPerL:isNaN(cpl)?0:cpl,liters:lit,curKm:cur,prevKm:prev};if(mfEdit){items[aCat]=(items[aCat]||[]).map(e=>e.id===mfEdit.id?entry:e);logChange('Edited fuel entry '+date+' in '+gC(aCat)?.name)}else{if(!items[aCat])items[aCat]=[];items[aCat].push(entry);logChange('Added fuel entry '+date+(station?' at '+station:'')+' to '+gC(aCat)?.name)}mfOpen=false;mfEdit=null;save();rList()}
+function delMF(id){const e=(items[aCat]||[]).find(x=>x.id==id);if(e)logChange('Deleted fuel entry '+e.date+' from '+gC(aCat)?.name);items[aCat]=(items[aCat]||[]).filter(e=>e.id!=id);cfm=null;save();rList()}
 
 // Standard item actions
-function sN(){const inp=$("ne");if(inp&&inp.value.trim()){gC(aCat).name=inp.value.trim();save()}eLN=false;rList()}
+function sN(){const inp=$("ne");if(inp&&inp.value.trim()){const old=gC(aCat).name;gC(aCat).name=inp.value.trim();logChange('Renamed "'+old+'" → "'+inp.value.trim()+'"');save()}eLN=false;rList()}
 async function reAnalyze(){if(!pendingImg||aiLoading)return;pendingLabel="Identifying...";aiLoading=true;rList();const label=await identifyImg(pendingImg);pendingLabel=label;aiLoading=false;rList()}
-function aI(){if(aiLoading)return;const inp=$("ni"),t=inp?.value?.trim()||"";if(!t&&!pendingImg)return;if(!items[aCat])items[aCat]=[];const entry={id:"i"+Date.now(),text:t||"Photo",done:false};if(pendingImg)entry.image=pendingImg;items[aCat].push(entry);pendingImg=null;pendingLabel="";save();rList()}
-function tI(id){const it=(items[aCat]||[]).find(i=>i.id===id);if(it)it.done=!it.done;save();rList()}
-function dI(id){items[aCat]=(items[aCat]||[]).filter(i=>i.id!==id);cfm=null;save();rList()}
-function sIE(id,v){if(v.trim()){const it=(items[aCat]||[]).find(i=>i.id===id);if(it)it.text=v.trim()}eiId=null;save();rList()}
-function cD(){items[aCat]=(items[aCat]||[]).filter(i=>!i.done);save();rList()}
-function uA(){(items[aCat]||[]).forEach(i=>i.done=false);save();rList()}
-function dL(){const c=gC(aCat);if(!c)return;const nc={id:"c"+Date.now(),name:c.name+" (Copy)",icon:c.icon,color:c.color,type:c.type||"standard"};cats.push(nc);items[nc.id]=(items[aCat]||[]).map(i=>({...i,id:"i"+Date.now()+Math.random().toString(36).slice(2,6)}));save();oList(nc.id)}
-function dCat(id){cats=cats.filter(c=>c.id!==id);delete items[id];cfm=null;save();if(aCat===id)sHome();else rHome()}
+function aI(){if(aiLoading)return;const inp=$("ni"),t=inp?.value?.trim()||"";if(!t&&!pendingImg)return;if(!items[aCat])items[aCat]=[];const entry={id:"i"+Date.now(),text:t||"Photo",done:false};if(pendingImg)entry.image=pendingImg;items[aCat].push(entry);logChange('Added "'+entry.text+'" to '+gC(aCat)?.name);pendingImg=null;pendingLabel="";save();rList()}
+function tI(id){const it=(items[aCat]||[]).find(i=>i.id===id);if(it){it.done=!it.done;logChange((it.done?"Checked":"Unchecked")+' "'+it.text+'" in '+gC(aCat)?.name)}save();rList()}
+function dI(id){const it=(items[aCat]||[]).find(i=>i.id===id);if(it)logChange('Deleted "'+it.text+'" from '+gC(aCat)?.name);items[aCat]=(items[aCat]||[]).filter(i=>i.id!==id);cfm=null;save();rList()}
+function sIE(id,v){if(v.trim()){const it=(items[aCat]||[]).find(i=>i.id===id);if(it){const old=it.text;it.text=v.trim();if(old!==v.trim())logChange('Edited "'+old+'" → "'+v.trim()+'" in '+gC(aCat)?.name)}}eiId=null;save();rList()}
+function cD(){const n=(items[aCat]||[]).filter(i=>i.done).length;logChange('Cleared '+n+' completed items from '+gC(aCat)?.name);items[aCat]=(items[aCat]||[]).filter(i=>!i.done);save();rList()}
+function uA(){const n=(items[aCat]||[]).filter(i=>i.done).length;logChange('Unchecked '+n+' items in '+gC(aCat)?.name);(items[aCat]||[]).forEach(i=>i.done=false);save();rList()}
+function dL(){const c=gC(aCat);if(!c)return;const nc={id:"c"+Date.now(),name:c.name+" (Copy)",icon:c.icon,color:c.color,type:c.type||"standard"};cats.push(nc);items[nc.id]=(items[aCat]||[]).map(i=>({...i,id:"i"+Date.now()+Math.random().toString(36).slice(2,6)}));logChange('Duplicated "'+c.name+'"');save();oList(nc.id)}
+function dCat(id){const c=gC(id);logChange('Deleted list "'+c?.name+'"');cats=cats.filter(c=>c.id!==id);delete items[id];cfm=null;save();if(aCat===id)sHome();else rHome()}
 
 // Modals
 function clM(){$("modals").innerHTML=""}
 function sNLM(){let si=ICONS[0],sc=COLORS[0],nm="",tp="standard";const r=()=>{$("modals").innerHTML='<div class="modal-ov" onclick="clM()"><div class="modal" onclick="event.stopPropagation()"><div class="modal-title">Create New List</div><div class="pk-label">LIST TYPE</div><div class="type-row"><button class="type-btn'+(tp==="standard"?" sel":"")+'" onclick="window._tp=\'standard\';if(window._si===\'⛽\')window._si=\'📋\';window._rn()"><span class="type-btn-ic">📋</span><span>Standard</span></button><button class="type-btn'+(tp==="mileage"?" sel":"")+'" onclick="window._tp=\'mileage\';window._si=\'⛽\';window._sc=\'#FF9800\';window._rn()"><span class="type-btn-ic">⛽</span><span>Mileage</span></button></div><div class="preview-row"><div class="pv-icon" style="border-color:'+sc+'">'+si+'</div><span class="pv-name">'+(esc(nm)||"List name...")+'</span></div><input class="m-input" id="nln" placeholder="List name..." value="'+esc(nm)+'" /><div class="pk-label">CHOOSE AN ICON</div><div class="ic-grid">'+ICONS.map(i=>'<button class="ic-opt'+(si===i?" sel":"")+'" style="'+(si===i?"box-shadow:0 0 0 2px "+sc:"")+'" onclick="window._si=\''+i+"';window._rn()\">"+i+"</button>").join("")+'</div><div class="pk-label">CHOOSE A COLOR</div><div class="cl-grid">'+COLORS.map(c=>'<button class="cl-opt'+(sc===c?" sel":"")+'" style="background:'+c+";"+(sc===c?"box-shadow:0 0 0 3px #0f1117,0 0 0 5px "+c+";transform:scale(1.15)":"")+'" onclick="window._sc=\''+c+"';window._rn()\"></button>").join("")+'</div><div class="m-btns"><button class="m-cancel" onclick="clM()">Cancel</button><button class="m-create" style="background:linear-gradient(135deg,'+sc+","+sc+'dd)" onclick="cCat()">Create</button></div></div></div>';const inp=$("nln");inp.focus();inp.oninput=()=>{nm=inp.value;$("modals").querySelector(".pv-name").textContent=nm||"List name..."};inp.onkeydown=e=>{if(e.key==="Enter")cCat()}};window._si=si;window._sc=sc;window._tp=tp;window._rn=()=>{si=window._si;sc=window._sc;tp=window._tp;nm=$("nln")?.value||nm;r()};r()}
-function cCat(){const nm=$("nln")?.value.trim();if(!nm)return;cats.push({id:"c"+Date.now(),name:nm,icon:window._si,color:window._sc,type:window._tp});clM();save();rHome()}
+function cCat(){const nm=$("nln")?.value.trim();if(!nm)return;cats.push({id:"c"+Date.now(),name:nm,icon:window._si,color:window._sc,type:window._tp});logChange('Created list "'+nm+'"');clM();save();rHome()}
 function sIM(){const c=gC(aCat);if(!c)return;let pi=c.icon,pc=c.color;const r=()=>{$("modals").innerHTML='<div class="modal-ov" onclick="clM()"><div class="modal" onclick="event.stopPropagation()"><div class="modal-title">Customize List</div><div class="preview-row" style="justify-content:center"><div class="pv-icon lg" style="border-color:'+pc+'">'+pi+'</div></div><div class="pk-label">CHOOSE AN ICON</div><div class="ic-grid">'+ICONS.map(i=>'<button class="ic-opt'+(pi===i?" sel":"")+'" style="'+(pi===i?"box-shadow:0 0 0 2px "+pc:"")+'" onclick="window._pi=\''+i+"';window._ri()\">"+i+"</button>").join("")+'</div><div class="pk-label">CHOOSE A COLOR</div><div class="cl-grid">'+COLORS.map(cl=>'<button class="cl-opt'+(pc===cl?" sel":"")+'" style="background:'+cl+";"+(pc===cl?"box-shadow:0 0 0 3px #0f1117,0 0 0 5px "+cl+";transform:scale(1.15)":"")+'" onclick="window._pc=\''+cl+"';window._ri()\"></button>").join("")+'</div><div class="m-btns"><button class="m-cancel" onclick="clM()">Cancel</button><button class="m-create" style="background:linear-gradient(135deg,'+pc+","+pc+'dd)" onclick="sIC()">Save</button></div></div></div>'};window._pi=pi;window._pc=pc;window._ri=()=>{pi=window._pi;pc=window._pc;r()};r()}
-function sIC(){const c=gC(aCat);if(c){c.icon=window._pi;c.color=window._pc}clM();save();rList()}
+function sIC(){const c=gC(aCat);if(c){c.icon=window._pi;c.color=window._pc;logChange('Changed icon/color for "'+c.name+'"')}clM();save();rList()}
 function sXM(iid){const it=(items[aCat]||[]).find(i=>i.id===iid);if(!it)return;const ot=cats.filter(c=>c.id!==aCat);$("modals").innerHTML='<div class="modal-ov" onclick="clM()"><div class="xfer-modal" onclick="event.stopPropagation()"><div class="modal-title">Send item to...</div><div class="xfer-preview">'+esc(it.text)+"</div>"+(ot.length?ot.map(c=>'<div class="xfer-row"><div class="xfer-info"><span class="xfer-li">'+c.icon+'</span><span class="xfer-ln">'+esc(c.name)+'</span></div><div class="xfer-acts"><button class="xfer-ab xfer-copy" onclick="cpTo(\''+iid+"','"+c.id+"')\">Copy</button><button class=\"xfer-ab xfer-move\" onclick=\"mvTo('"+iid+"','"+c.id+"')\">Move</button></div></div>").join(""):'<p style="text-align:center;color:#666;padding:20px 0">No other lists.</p>')+'<button class="full-cancel" onclick="clM()">Cancel</button></div></div>'}
 function cpTo(iid,tid){const it=(items[aCat]||[]).find(i=>i.id===iid);if(!it)return;if(!items[tid])items[tid]=[];items[tid].push({id:"i"+Date.now(),text:it.text,done:false});clM();save();rList()}
 function mvTo(iid,tid){const it=(items[aCat]||[]).find(i=>i.id===iid);if(!it)return;items[aCat]=(items[aCat]||[]).filter(i=>i.id!==iid);if(!items[tid])items[tid]=[];items[tid].push({id:"i"+Date.now(),text:it.text,done:false});clM();save();rList()}
@@ -386,7 +388,9 @@ function doSignOut(){clM();if(unsub){unsub();unsub=null}if(!DEV_MODE)fbAuth.sign
 function createBackup(){
   if(!user||DEV_MODE)return;
   const st=$('backup-status');if(st)st.innerHTML='<div class="pw-msg ok">Saving backup...</div>';
-  const data={categories:cats,items:items,anthropicKey:userApiKey,createdAt:firebase.firestore.FieldValue.serverTimestamp(),auto:false};
+  const changes=changeLog.length?changeLog.join(", "):"Manual backup";
+  const data={categories:cats,items:items,anthropicKey:userApiKey,createdAt:firebase.firestore.FieldValue.serverTimestamp(),auto:false,changes:changes};
+  changeLog=[];
   fbDb.collection("users").doc(user.uid).collection("backups").add(data).then(()=>{
     if(st)st.innerHTML='<div class="pw-msg ok">✓ Backup saved!</div>';
     setTimeout(()=>{if($('backup-status'))$('backup-status').innerHTML=''},3000);
@@ -406,7 +410,8 @@ function showRestoreList(){
       const numLists=d.categories?d.categories.length:0;
       const numItems=d.items?Object.values(d.items).reduce((a,b)=>a+b.length,0):0;
       const badge=d.auto?'<span style="font-size:10px;color:#888;background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;margin-left:6px">auto</span>':'<span style="font-size:10px;color:#4CAF50;background:rgba(76,175,80,0.1);padding:2px 6px;border-radius:4px;margin-left:6px">manual</span>';
-      h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:10px;margin-bottom:6px"><div><div style="font-size:13px;font-weight:600;color:#ccc">'+date.toLocaleDateString()+' '+date.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+badge+'</div><div style="font-size:11px;color:#888">'+numLists+' lists, '+numItems+' items</div></div><button onclick="doRestore(\''+doc.id+'\')" style="background:linear-gradient(135deg,#2196F3,#1565C0);border:none;color:#fff;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Restore</button></div>';
+      const changes=d.changes||"";
+      h+='<div style="background:rgba(255,255,255,0.04);border-radius:10px;margin-bottom:6px;padding:10px 12px"><div style="display:flex;align-items:center;justify-content:space-between"><div><div style="font-size:13px;font-weight:600;color:#ccc">'+date.toLocaleDateString()+' '+date.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+badge+'</div><div style="font-size:11px;color:#888">'+numLists+' lists, '+numItems+' items</div></div><button onclick="doRestore(\''+doc.id+'\')" style="background:linear-gradient(135deg,#2196F3,#1565C0);border:none;color:#fff;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Restore</button></div>'+(changes?'<div style="font-size:11px;color:#666;margin-top:6px;line-height:1.4;border-top:1px solid rgba(255,255,255,0.04);padding-top:6px">'+esc(changes)+'</div>':'')+'</div>';
     });
     h+='</div>';
     if(st)st.innerHTML=h;
