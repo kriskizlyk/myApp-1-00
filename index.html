@@ -267,7 +267,22 @@ $('file-input').onchange=async function(e){
 function loadLocal(){try{const r=localStorage.getItem(LSK);if(r){const d=JSON.parse(r);cats=d.c||[...DC];items=d.i||{}}else{cats=[...DC];items={}}}catch(e){cats=[...DC];items={}}}
 function saveLocal(){try{localStorage.setItem(LSK,JSON.stringify({c:cats,i:items}))}catch(e){}}
 function saveFB(){if(!user)return;fbDb.collection("users").doc(user.uid).set({categories:cats,items,updatedAt:firebase.firestore.FieldValue.serverTimestamp()},{merge:true}).catch(()=>{})}
-function save(){DEV_MODE?saveLocal():saveFB()}
+let lastAutoBackup=0;const AUTO_BACKUP_INTERVAL=5*60*1000;
+function save(){DEV_MODE?saveLocal():saveFB();autoBackup()}
+function autoBackup(){
+  if(DEV_MODE||!user)return;
+  const now=Date.now();
+  if(now-lastAutoBackup<AUTO_BACKUP_INTERVAL)return;
+  lastAutoBackup=now;
+  const data={categories:cats,items:items,anthropicKey:userApiKey,createdAt:firebase.firestore.FieldValue.serverTimestamp(),auto:true};
+  fbDb.collection("users").doc(user.uid).collection("backups").add(data).then(()=>{
+    // Clean up old auto-backups, keep last 20
+    fbDb.collection("users").doc(user.uid).collection("backups").orderBy("createdAt","desc").get().then(snap=>{
+      const autoDocs=[...snap.docs].filter(d=>d.data().auto===true);
+      if(autoDocs.length>20){autoDocs.slice(20).forEach(d=>d.ref.delete())}
+    }).catch(()=>{});
+  }).catch(()=>{});
+}
 
 // Auth
 function setupAuth(){
@@ -366,7 +381,7 @@ function doSignOut(){clM();if(unsub){unsub();unsub=null}if(!DEV_MODE)fbAuth.sign
 function createBackup(){
   if(!user||DEV_MODE)return;
   const st=$('backup-status');if(st)st.innerHTML='<div class="pw-msg ok">Saving backup...</div>';
-  const data={categories:cats,items:items,anthropicKey:userApiKey,createdAt:firebase.firestore.FieldValue.serverTimestamp()};
+  const data={categories:cats,items:items,anthropicKey:userApiKey,createdAt:firebase.firestore.FieldValue.serverTimestamp(),auto:false};
   fbDb.collection("users").doc(user.uid).collection("backups").add(data).then(()=>{
     if(st)st.innerHTML='<div class="pw-msg ok">✓ Backup saved!</div>';
     setTimeout(()=>{if($('backup-status'))$('backup-status').innerHTML=''},3000);
@@ -377,7 +392,7 @@ function createBackup(){
 function showRestoreList(){
   if(!user||DEV_MODE)return;
   const st=$('backup-status');if(st)st.innerHTML='<div class="pw-msg ok">Loading backups...</div>';
-  fbDb.collection("users").doc(user.uid).collection("backups").orderBy("createdAt","desc").limit(10).get().then(snap=>{
+  fbDb.collection("users").doc(user.uid).collection("backups").orderBy("createdAt","desc").limit(25).get().then(snap=>{
     if(snap.empty){if(st)st.innerHTML='<div class="pw-msg err">No backups found</div>';return}
     let h='<div style="margin-top:8px">';
     snap.forEach(doc=>{
@@ -385,7 +400,8 @@ function showRestoreList(){
       const date=d.createdAt?d.createdAt.toDate():new Date();
       const numLists=d.categories?d.categories.length:0;
       const numItems=d.items?Object.values(d.items).reduce((a,b)=>a+b.length,0):0;
-      h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:10px;margin-bottom:6px"><div><div style="font-size:13px;font-weight:600;color:#ccc">'+date.toLocaleDateString()+' '+date.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+'</div><div style="font-size:11px;color:#888">'+numLists+' lists, '+numItems+' items</div></div><button onclick="doRestore(\''+doc.id+'\')" style="background:linear-gradient(135deg,#2196F3,#1565C0);border:none;color:#fff;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Restore</button></div>';
+      const badge=d.auto?'<span style="font-size:10px;color:#888;background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:4px;margin-left:6px">auto</span>':'<span style="font-size:10px;color:#4CAF50;background:rgba(76,175,80,0.1);padding:2px 6px;border-radius:4px;margin-left:6px">manual</span>';
+      h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:10px;margin-bottom:6px"><div><div style="font-size:13px;font-weight:600;color:#ccc">'+date.toLocaleDateString()+' '+date.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+badge+'</div><div style="font-size:11px;color:#888">'+numLists+' lists, '+numItems+' items</div></div><button onclick="doRestore(\''+doc.id+'\')" style="background:linear-gradient(135deg,#2196F3,#1565C0);border:none;color:#fff;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif">Restore</button></div>';
     });
     h+='</div>';
     if(st)st.innerHTML=h;
