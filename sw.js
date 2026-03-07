@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mylists-v32';
+const CACHE_NAME = 'mylists-v33';
 
 self.addEventListener('install', e => {
   self.skipWaiting();
@@ -13,8 +13,10 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+  
+  // Only cache http/https requests
+  if (!e.request.url.startsWith('http')) return;
 
-  // Network first, cache fallback — for everything
   e.respondWith(
     fetch(e.request).then(res => {
       if (res.status === 200) {
